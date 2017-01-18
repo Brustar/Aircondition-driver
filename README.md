@@ -1,2 +1,2 @@
 # Aircondition-driver
-hitachi center air condition control
+hitachi centra air condition control
