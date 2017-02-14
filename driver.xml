@@ -43,6 +43,31 @@
         <type>STRING</type>
         <default>00 03</default>
       </property>
+      <property>
+        <name>TCP Address</name>
+        <type>STRING</type>
+        <default></default>
+      </property>
+      <property>
+        <name>TCP Port</name>
+        <type>STRING</type>
+        <default></default>
+      </property>
+      <property>
+        <name>TCP Status</name>
+        <type>STRING</type>
+        <default>ready to connect</default>
+        <readonly>true</readonly>
+      </property>
+      <property>
+        <name>Connect Category</name>
+        <type>LIST</type>
+        <default>TCP</default>
+        <items>
+          <item>TCP</item>
+          <item>Serial</item>
+        </items>
+      </property>
     </properties>
     <actions>
       <action>
@@ -104,6 +129,14 @@
       <action>
         <name>Query</name>
         <command>query</command>
+      </action>
+      <action>
+        <name>Connect</name>
+        <command>Connect</command>
+      </action>
+      <action>
+        <name>Disconnect</name>
+        <command>Disconnect</command>
       </action>
     </actions>
     <power_management_method>AlwaysOn</power_management_method>

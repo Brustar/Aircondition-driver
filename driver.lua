@@ -1,3 +1,5 @@
+require "Tcp"
+
 AIR = {}
 
 AIR["ON"] = "31 01"
@@ -17,6 +19,8 @@ AIR["MIDDLE"] = "34 02"
 AIR["LOW"] = "34 04"
 
 AIR["AWAY"] = "01 31 02 FF FF FF 31"
+
+TCP = nil
 
 function dbg(strDebugText)
   if (gDbgPrint) then print(strDebugText) end
@@ -60,7 +64,11 @@ function ProcessQueue()
       if (string.byte(string.sub(pkt, 1, 1)) == 0x83) then
         gLastEnquiry = string.byte(string.sub(pkt, 3, 3))  -- Track Enquiries...
       end
-      C4:SendToSerial(1, pkt)
+	 if (Properties["Connect Category"] == "TCP") then
+	   TCP:Write(pkt)
+	 else
+	   C4:SendToSerial(1, pkt)
+	 end
     end
   end
 end
@@ -275,6 +283,20 @@ function ExecuteCommand(strCommand, tParams)
 	   if action == "query" then
 		  cmd = query()
 	   end
+	   
+	   if action == "Connect" then
+		  TCP = tcpClient(5000, function(info, err)
+			 if (info ~= nil) then
+				print("GOT: " .. tostring(info))
+			 else
+				print("ERROR: " .. err)
+			 end
+		  end)
+	   end
+	   
+	   if action == "Disconnect" then
+		  TCP:close()
+	   end
     end
     airControl(cmd)
 end
@@ -341,7 +363,6 @@ function OnVariableChanged(strName)
 	   airControl(command)
     end
 end
-
 
 --Init
 gDbgTimer, gDbgPrint, gDbgLog = 0, false, false

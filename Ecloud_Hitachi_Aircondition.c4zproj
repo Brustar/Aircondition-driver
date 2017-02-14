@@ -5,5 +5,6 @@
   <Item type="file" name="documentation.rtf" />
   <Item type="file" name="driver.lua" />
   <Item type="file" name="driver.xml" />
+  <Item type="file" name="Tcp.lua" />
  </Items>
 </Driver>
