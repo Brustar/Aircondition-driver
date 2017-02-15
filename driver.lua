@@ -65,7 +65,7 @@ function ProcessQueue()
         gLastEnquiry = string.byte(string.sub(pkt, 3, 3))  -- Track Enquiries...
       end
 	 if (Properties["Connect Category"] == "TCP") then
-	   TCP:Write(pkt)
+	   TCP:Write(pkt):ReadUpTo(7)
 	 else
 	   C4:SendToSerial(1, pkt)
 	 end
@@ -287,15 +287,20 @@ function ExecuteCommand(strCommand, tParams)
 	   if action == "Connect" then
 		  TCP = tcpClient(5000, function(info, err)
 			 if (info ~= nil) then
-				print("GOT: " .. tostring(info))
+				hexdump(info, function(s) dbg("<------ " .. s) end)
+				
+				C4:SetTimer(1000, function()
+				    TCP:ReadUpTo(7)
+				end)
 			 else
 				print("ERROR: " .. err)
 			 end
 		  end)
+		  TCP:ReadUpTo(7)
 	   end
 	   
 	   if action == "Disconnect" then
-		  TCP:close()
+		  TCP:Close()
 	   end
     end
     airControl(cmd)
