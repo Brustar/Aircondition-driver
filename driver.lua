@@ -1,4 +1,5 @@
-require "Tcp"
+--require "Tcp"
+require "Udp"
 
 AIR = {}
 
@@ -20,7 +21,7 @@ AIR["LOW"] = "34 04"
 
 AIR["AWAY"] = "01 31 02 FF FF FF 31"
 
-TCP = nil
+--TCP = nil
 
 function dbg(strDebugText)
   if (gDbgPrint) then print(strDebugText) end
@@ -285,6 +286,7 @@ function ExecuteCommand(strCommand, tParams)
 	   end
 	   
 	   if action == "Connect" then
+		  --[[
 		  TCP = tcpClient(5000, function(info, err)
 			 if (info ~= nil) then
 				hexdump(info, function(s) dbg("<------ " .. s) end)
@@ -297,10 +299,13 @@ function ExecuteCommand(strCommand, tParams)
 			 end
 		  end)
 		  TCP:ReadUpTo(7)
+		  ]]--
+		  Udp:create().connect()
 	   end
 	   
 	   if action == "Disconnect" then
-		  TCP:Close()
+		  --TCP:Close()
+		  Udp:create().close()
 	   end
     end
     airControl(cmd)

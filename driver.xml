@@ -68,6 +68,11 @@
           <item>Serial</item>
         </items>
       </property>
+      <property>
+        <name>UDP Port</name>
+        <type>STRING</type>
+        <default>5000</default>
+      </property>
     </properties>
     <actions>
       <action>
