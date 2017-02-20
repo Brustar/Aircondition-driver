@@ -338,6 +338,10 @@ function OnPropertyChanged(strProperty)
   C4:InvalidateState()
 end
 
+function OnServerDataIn(nHandle, strData, strclientAddress, strPort)
+    Udp:create().OnServerDataIn(nHandle, strData, strclientAddress, strPort)
+end
+
 --外部调用控制空调
 function OnVariableChanged(strName)
     print("Variable value changed - variable named: " .. strName)
