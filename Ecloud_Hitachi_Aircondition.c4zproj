@@ -5,7 +5,9 @@
   <Item type="file" name="documentation.rtf" />
   <Item type="file" name="driver.lua" />
   <Item type="file" name="driver.xml" />
+  <Item type="file" name="Server.lua" />
   <Item type="file" name="Tcp.lua" />
   <Item type="file" name="Udp.lua" />
+  <Item type="file" name="Pack.lua" />
  </Items>
 </Driver>

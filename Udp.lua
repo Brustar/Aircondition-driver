@@ -1,18 +1,22 @@
---udpServer
-require "Tcp"
+require "Server"
+require "Pack"
 
 Udp = {}
 
 UDP_PORT = tonumber(Property("UDP Port"))
+UDP_CONNECT_ID = 6003
+UDP_PORT = 5000
 
 function Udp:create()
 
     local udp = {}
     
     self.tcp = nil
+    self.timer = nil
     self.timout = 5000
     
-    function udp.connect()
+    --udpServer
+    function udp.server()
 	   C4:CreateServer(UDP_PORT, "", true)
     end
     
@@ -43,10 +47,30 @@ function Udp:create()
 	  print("OnServerConnectionStatusChanged hash: " .. nHash .. " port: " .. nPort .. " status: " .. strStatus)
     end
     
-    function udp.close(nHandle)
+    function udp.closeServer(nHandle)
 	   self.tcp:Close()
 	   self.tcp = nil
 	   C4:ServerCloseClient(nHandle)
+    end
+    
+    
+    function udp.client()
+	   C4:CreateNetworkConnection (UDP_CONNECT_ID, "255.255.255.255")
+	   C4:NetConnect(UDP_CONNECT_ID, UDP_PORT, 'UDP')
+    end
+    
+    function udp.OnConnectionStatusChanged(idBinding, nPort, strStatus)
+	   if (strStatus == "ONLINE") then
+		  local pack = Pack:create().broadcastHex()
+		  self.timer = C4:SetTimer(5 * 1000, function(timer, skips)
+			 C4:SendToNetwork(UDP_CONNECT_ID, UDP_PORT, pack)
+		  end,true)
+	   end
+    end
+    
+    function udp.disconnect()
+	   self.timer:Cancel()
+	   C4:NetDisconnect(UDP_CONNECT_ID, UDP_PORT, 'UDP')
     end
    
     return udp

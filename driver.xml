@@ -228,4 +228,10 @@
       </classes>
     </connection>
   </connections>
+  <events>
+    <event>
+      <id>1</id>
+      <name>Key Event</name>
+    </event>
+  </events>
 </devicedata>

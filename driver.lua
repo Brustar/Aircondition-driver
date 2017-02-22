@@ -21,7 +21,7 @@ AIR["LOW"] = "34 04"
 
 AIR["AWAY"] = "01 31 02 FF FF FF 31"
 
---TCP = nil
+SERVER = nil
 
 function dbg(strDebugText)
   if (gDbgPrint) then print(strDebugText) end
@@ -66,7 +66,7 @@ function ProcessQueue()
         gLastEnquiry = string.byte(string.sub(pkt, 3, 3))  -- Track Enquiries...
       end
 	 if (Properties["Connect Category"] == "TCP") then
-	   TCP:Write(pkt):ReadUpTo(7)
+	   SERVER:sendAll(pkt)
 	 else
 	   C4:SendToSerial(1, pkt)
 	 end
@@ -286,26 +286,12 @@ function ExecuteCommand(strCommand, tParams)
 	   end
 	   
 	   if action == "Connect" then
-		  --[[
-		  TCP = tcpClient(5000, function(info, err)
-			 if (info ~= nil) then
-				hexdump(info, function(s) dbg("<------ " .. s) end)
-				
-				C4:SetTimer(1000, function()
-				    TCP:ReadUpTo(7)
-				end)
-			 else
-				print("ERROR: " .. err)
-			 end
-		  end)
-		  TCP:ReadUpTo(7)
-		  ]]--
-		  Udp:create().connect()
+		  Udp:create().client()
+		  SERVER = tcpServer()
 	   end
 	   
 	   if action == "Disconnect" then
-		  --TCP:Close()
-		  Udp:create().close()
+		  Udp:create().disconnect()
 	   end
     end
     airControl(cmd)
@@ -338,8 +324,10 @@ function OnPropertyChanged(strProperty)
   C4:InvalidateState()
 end
 
-function OnServerDataIn(nHandle, strData, strclientAddress, strPort)
-    Udp:create().OnServerDataIn(nHandle, strData, strclientAddress, strPort)
+function OnConnectionStatusChanged(idBinding, nPort, strStatus)
+    if (nPort == UDP_PORT) then
+	   Udp:create().OnConnectionStatusChanged(idBinding, nPort, strStatus)
+    end
 end
 
 --外部调用控制空调
@@ -386,3 +374,5 @@ C4:AddVariable("CURRENT_TEMPRETURE", "0", "NUMBER")
 C4:AddVariable("IS_ON", "1", "BOOL")
 C4:AddVariable("CURRENT_FAULT", "0", "NUMBER")
 C4:AddVariable("CONTROL_CMD", "0", "NUMBER")
+
+C4:AddVariable("KEY_ID", "0", "NUMBER")
