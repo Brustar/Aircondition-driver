@@ -44,17 +44,7 @@
         <default>00 03</default>
       </property>
       <property>
-        <name>TCP Address</name>
-        <type>STRING</type>
-        <default></default>
-      </property>
-      <property>
-        <name>TCP Port</name>
-        <type>STRING</type>
-        <default></default>
-      </property>
-      <property>
-        <name>TCP Status</name>
+        <name>Server Status</name>
         <type>STRING</type>
         <default>ready to connect</default>
         <readonly>true</readonly>
@@ -67,11 +57,6 @@
           <item>TCP</item>
           <item>Serial</item>
         </items>
-      </property>
-      <property>
-        <name>UDP Port</name>
-        <type>STRING</type>
-        <default>5000</default>
       </property>
     </properties>
     <actions>
