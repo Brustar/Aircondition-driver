@@ -109,20 +109,24 @@ local server = {
                                  local info = {}
                                  client:OnRead(
                                               function(cli, strData)
+										  local pack = Pack:create()
 										  function handle(key)
 											 C4:SetVariable("Key_ID", tostring(key))
 											 C4:FireEvent("key event")
 											 local data =nil
-											 for i =1 , 4 do	
-												if i==key then
-												    data = pack.lightonHex(i)
-												else
-												    data = pack.lightoffHex(i) 
-												end
-												self:Write(cli , data)
+											 for i =1 , 4 do
+												C4:SetTimer(500, function()
+												    if i==key then
+													   data = pack.lightonHex(i)
+												    else
+													   data = pack.lightoffHex(i) 
+												    end
+												
+												    cli:Write(data)
+												end)
 											 end
 										  end
-										  local pack = Pack:create()
+										  
 										  hexdump(strData, function(s) print("server:<------ " .. s) end)
 										  if strData == pack.keyHex(1) then
 											 handle(1)

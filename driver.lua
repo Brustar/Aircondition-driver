@@ -1,4 +1,3 @@
---require "Tcp"
 require "Udp"
 
 AIR = {}

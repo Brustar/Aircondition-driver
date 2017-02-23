@@ -4,7 +4,7 @@ require "Pack"
 Udp = {}
 
 UDP_PORT = tonumber(Properties["UDP Port"])
-UDP_CONNECT_ID = 6003
+UDP_CONNECT_ID = 6005
 UDP_PORT = 5000
 
 function Udp:create()
@@ -12,7 +12,7 @@ function Udp:create()
     local udp = {}
     
     self.tcp = nil
-    self.timer = nil
+    --self.timer = nil
     self.timout = 5000
     
     --udpServer
@@ -62,14 +62,14 @@ function Udp:create()
     function udp.OnConnectionStatusChanged(idBinding, nPort, strStatus)
 	   if (strStatus == "ONLINE") then
 		  local pack = Pack:create().broadcastHex()
-		  self.timer = C4:SetTimer(5 * 1000, function(timer, skips)
+		  C4:SetTimer(5 * 1000, function(timer, skips)
 			 C4:SendToNetwork(UDP_CONNECT_ID, UDP_PORT, pack)
 		  end,true)
 	   end
     end
     
-    function udp.disconnect()
-	   self.timer:Cancel()
+    function udp.disconnect(self)
+	   --self.timer:Cancel()
 	   C4:NetDisconnect(UDP_CONNECT_ID, UDP_PORT, 'UDP')
     end
    

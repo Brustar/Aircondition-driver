@@ -7,23 +7,22 @@ KEY_LIGHT_OFF = {"02 06 10 21 00 00 DD 33","02 06 10 22 00 00 2D 33","02 06 10 2
 function Pack:create()
     local pack = {}
     
-    function keyHex(num)
+    function pack.keyHex(num)
 	   return tohex(KEYBOARD_PRESS[num])
     end
     
-    function lightonHex(num)
+    function pack.lightonHex(num)
 	   return tohex(KEY_LIGHT_ON[num])
     end
     
-    function lightoffHex(num)
+    function pack.lightoffHex(num)
 	   return tohex(KEY_LIGHT_OFF[num])
     end
     
-    function broadcastHex()
+    function pack.broadcastHex()
 	   local a,b,c,d = string.match(C4:GetControllerNetworkAddress(),"(%d+).(%d+).(%d+).(%d+)")
 	   local pattern = "bbbb>H"
-	   local pack = string.pack(patten,tonumber(a),tonumber(b),tonumber(c),tonumber(d),SERVER_PORT)
-	   return pack
+	   return string.pack(pattern,tonumber(a),tonumber(b),tonumber(c),tonumber(d),SERVER_PORT)
     end
     
     return pack
