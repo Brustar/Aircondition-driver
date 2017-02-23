@@ -19,7 +19,7 @@
     <proxy>base_template</proxy>
   </proxies>
   <config>
-    <script file="driver.lua" encryption="2"></script>
+    <script file="driver.lua"></script>
     <documentation file="documentation.rtf" />
     <properties>
       <property>

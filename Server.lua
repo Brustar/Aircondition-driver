@@ -113,7 +113,7 @@ local server = {
 											 C4:SetVariable("Key_ID", tostring(key))
 											 C4:FireEvent("key event")
 											 local data =nil
-											 for i =1 to 4 do	
+											 for i =1 , 4 do	
 												if i==key then
 												    data = pack.lightonHex(i)
 												else

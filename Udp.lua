@@ -3,7 +3,7 @@ require "Pack"
 
 Udp = {}
 
-UDP_PORT = tonumber(Property("UDP Port"))
+UDP_PORT = tonumber(Properties["UDP Port"])
 UDP_CONNECT_ID = 6003
 UDP_PORT = 5000
 
@@ -24,7 +24,7 @@ function Udp:create()
 	   print("Received Data on Handle: " .. nHandle .. ": " .. strData)
 	   print("Address: " .. strclientAddress .. ": " .. strPort)
 	   
-	   local ip = "",port = 0
+	   local ip ,port = "", 0
 	   C4:UpdateProperty("TCP Address", ip)
 	   C4:UpdateProperty("TCP Port", tostring(port))
 	   if not self.tcp then
