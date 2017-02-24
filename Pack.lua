@@ -25,5 +25,25 @@ function Pack:create()
 	   return string.pack(pattern,tonumber(a),tonumber(b),tonumber(c),tonumber(d),SERVER_PORT)
     end
     
+    function pack.crc16(pmsg)
+	   local crc_table = {
+		   0x0000, 0xcc01, 0xd801, 0x1400,
+		   0xf001, 0x3c00, 0x2800, 0xe401,
+		   0xa001, 0x6c00, 0x7800, 0xb401,
+		   0x5000, 0x9c01, 0x8801, 0x4400
+	   }
+	    local crc		= 0xffff
+	    local i, temp
+
+	    for i = 1,#pmsg do 
+		    temp = string.byte(string.sub(pmsg,i,i))
+		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(temp , crc) , 15)+1] , bit.rshift(crc , 4));
+		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(bit.rshift(temp , 4) , crc) , 15)+1] , bit.rshift(crc , 4));
+	    end
+
+	    local ret = string.format("%4x",crc):gsub("(..)(..)","%2%1")
+	    return ret
+    end
+    
     return pack
 end
