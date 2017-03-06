@@ -105,7 +105,10 @@ local server = {
                                  if (self.clientsCnt >= maxClients) then
                                         client:Write(""):Close(true)
                                         return
-                                  end
+				 else
+					self.clients[client] = client
+					self.clientsCnt = self.clientsCnt + 1
+                                 end
                                  local info = {}
                                  client:OnRead(
                                               function(cli, strData)
