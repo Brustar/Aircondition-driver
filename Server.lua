@@ -103,11 +103,11 @@ local server = {
 						   print("Connection on server " .. tostring(srv) .. " accepted, client: " .. tostring(client))
 						   client:ReadUpTo(10)
                                  if (self.clientsCnt >= maxClients) then
-                                        client:Write(""):Close(true)
-                                        return
-				 else
-					self.clients[client] = client
-					self.clientsCnt = self.clientsCnt + 1
+							 client:Write(""):Close(true)
+							 return
+						  else
+							 self.clients[client] = client
+							 self.clientsCnt = self.clientsCnt + 1
                                  end
                                  local info = {}
                                  client:OnRead(

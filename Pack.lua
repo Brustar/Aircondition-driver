@@ -36,7 +36,7 @@ function Pack:create()
 	    local i, temp
 
 	    for i = 1,#pmsg do 
-		    temp = string.byte(string.sub(pmsg,i,i))
+		    temp = string.byte(pmsg,i)
 		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(temp , crc) , 15)+1] , bit.rshift(crc , 4));
 		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(bit.rshift(temp , 4) , crc) , 15)+1] , bit.rshift(crc , 4));
 	    end
