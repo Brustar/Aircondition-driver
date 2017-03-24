@@ -22,6 +22,11 @@ AIR["AWAY"] = "01 31 02 FF FF FF 31"
 
 SERVER = nil
 
+function OnDriverInit()
+    Udp:create().client()
+    SERVER = tcpServer()
+end
+
 function dbg(strDebugText)
   if (gDbgPrint) then print(strDebugText) end
   if (gDbgLog) then C4:ErrorLog("kohler_RainPanel: " .. strDebugText) end
@@ -291,6 +296,22 @@ function ExecuteCommand(strCommand, tParams)
 	   
 	   if action == "Disconnect" then
 		  Udp:create().disconnect()
+	   end
+	   
+	   if action == "K1" then
+		  cmd = pack.lightonHex(1)
+	   end
+	   
+	   if action == "K2" then
+		  cmd = pack.lightonHex(2)
+	   end
+	   
+	   if action == "K3" then
+		  cmd = pack.lightonHex(3)
+	   end
+	   
+	   if action == "K4" then
+		  cmd = pack.lightonHex(4)
 	   end
     end
     airControl(cmd)

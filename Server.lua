@@ -118,7 +118,7 @@ local server = {
 											 C4:FireEvent("key event")
 											 local data =nil
 											 for i =1 , 4 do
-												C4:SetTimer(500, function()
+												C4:SetTimer((i-1)*500, function()
 												    if i==key then
 													   data = pack.lightonHex(i)
 												    else
@@ -140,6 +140,7 @@ local server = {
 										  elseif strData == pack.keyHex(4) then
 											 handle(4)
 										  end
+										  cli:ReadUpTo(10)
                                                end
                                         )
                                         :OnWrite(
