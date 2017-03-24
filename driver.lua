@@ -300,18 +300,26 @@ function ExecuteCommand(strCommand, tParams)
 	   
 	   if action == "K1" then
 		  cmd = pack.lightonHex(1)
+		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K2" then
 		  cmd = pack.lightonHex(2)
+		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K3" then
 		  cmd = pack.lightonHex(3)
+		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K4" then
 		  cmd = pack.lightonHex(4)
+		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:FireEvent("key event")
 	   end
     end
     airControl(cmd)
@@ -358,6 +366,7 @@ function OnVariableChanged(strName)
     if strName == "CONTROL_CMD" then
 	   local cmd = tonumber(Variables[strName])
 	   if cmd == 1 then			--low
+		  C4:UpdateProperty("Server Status", "...")
 		  command = lowMode()
 	   elseif cmd == 2 then		--middle
 		  command = middleMode()
