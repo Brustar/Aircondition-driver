@@ -118,14 +118,14 @@ local server = {
 											 C4:FireEvent("key event")
 											 local data =nil
 											 for i =1 , 4 do
-												C4:SetTimer((i-1)*500, function()
+												C4:SetTimer(i*500, function()
 												    if i==key then
 													   data = pack.lightonHex(i)
 												    else
 													   data = pack.lightoffHex(i) 
 												    end
 												
-												    cli:Write(data)
+												    cli:Write(toHex(data))
 												end)
 											 end
 										  end

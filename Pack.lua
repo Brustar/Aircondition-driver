@@ -12,11 +12,11 @@ function Pack:create()
     end
     
     function pack.lightonHex(num)
-	   return tohex(KEY_LIGHT_ON[num])
+	   return KEY_LIGHT_ON[num]
     end
     
     function pack.lightoffHex(num)
-	   return tohex(KEY_LIGHT_OFF[num])
+	   return KEY_LIGHT_OFF[num]
     end
     
     function pack.broadcastHex()

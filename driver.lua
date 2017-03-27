@@ -1,5 +1,5 @@
 require "Udp"
-
+require "Pack"
 AIR = {}
 
 AIR["ON"] = "31 01"
@@ -297,28 +297,28 @@ function ExecuteCommand(strCommand, tParams)
 	   if action == "Disconnect" then
 		  Udp:create().disconnect()
 	   end
-	   
+	   local pack = Pack:create()
 	   if action == "K1" then
 		  cmd = pack.lightonHex(1)
-		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:SetVariable("Key_ID", 1)
 		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K2" then
 		  cmd = pack.lightonHex(2)
-		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:SetVariable("Key_ID", 2)
 		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K3" then
 		  cmd = pack.lightonHex(3)
-		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:SetVariable("Key_ID", 3)
 		  C4:FireEvent("key event")
 	   end
 	   
 	   if action == "K4" then
 		  cmd = pack.lightonHex(4)
-		  C4:SetVariable("Key_ID", tostring(key))
+		  C4:SetVariable("Key_ID", 4)
 		  C4:FireEvent("key event")
 	   end
     end
