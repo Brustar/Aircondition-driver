@@ -21,7 +21,7 @@ AIR["LOW"] = "34 04"
 AIR["AWAY"] = "01 31 02 FF FF FF 31"
 
 SERVER = nil
-
+EX_CMD = {}
 function OnDriverInit()
     Udp:create().client()
     SERVER = tcpServer()
@@ -153,8 +153,26 @@ function poweroff()
     return createCMD(AIR["OFF"])
 end
 
-function ExecuteCommand(strCommand, tParams)
-    print("strCommand:" .. strCommand)
+function ExecuteCommand(sCommand, tParams)
+
+	-- Remove any spaces (trim the command)
+	local trimmedCommand = string.gsub(sCommand, " ", "")
+
+	-- if function exists then execute (non-stripped)
+	if (EX_CMD[sCommand] ~= nil and type(EX_CMD[sCommand]) == "function") then
+		EX_CMD[sCommand](tParams)
+	-- elseif trimmed function exists then execute
+	elseif (EX_CMD[trimmedCommand] ~= nil and type(EX_CMD[trimmedCommand]) == "function") then
+		EX_CMD[trimmedCommand](tParams)
+	-- handle the command
+	elseif (sCommand ~= nil) then
+		QueueCommand(sCommand)
+	else
+		Dbg:Alert("ExecuteCommand: Unhandled command = " .. sCommand)
+	end
+end
+
+function QueueCommand(strCommand)
     local cmd = ""
     if (strCommand == "AWAY") then
 	   cmd = AIR["AWAY"]
@@ -221,107 +239,110 @@ function ExecuteCommand(strCommand, tParams)
 	   cmd = query()
     end
     
-    if (strCommand == "LUA_ACTION") then
-	   local action = tParams["ACTION"]
-	   if action == "away" then
-		  cmd = AIR["AWAY"]
-	   end
-	   
-	   if action == "on" then
-		  C4:SetVariable("IS_ON", "1", "BOOL")
-		  cmd = poweron()
-	   end
-    
-	   if action == "off" then
-		  C4:SetVariable("IS_ON", "0", "BOOL")
-		  cmd = poweroff()
-	   end
-    
-	   if action == "cool" then
-		  cmd = coolMode()
-	   end
-    
-	   if action == "heat" then
-		  cmd = heatMode()
-	   end
-    
-	   if action == "dry" then
-		  cmd = dryMode()
-	   end
-    
-	   if action == "fan" then
-		  cmd = fanMode()
-	   end
-    
-	   if action == "high" then
-		  cmd = highMode()
-	   end
-    
-	   if action == "middle" then
-		  cmd = middleMode()
-	   end
-    
-	   if action == "low" then
-		  cmd = lowMode()
-	   end
-	   
-	   if action == "degree18" then
-		  C4:SetVariable("CURRENT_TEMPRETURE", tostring(18))
-		  cmd = setTempture("12")
-	   end
-	   
-	   if action == "degree22" then
-		  C4:SetVariable("CURRENT_TEMPRETURE", tostring(22))
-		  cmd = setTempture("16")
-	   end
-	   
-	   if action == "degree26" then
-		  C4:SetVariable("CURRENT_TEMPRETURE", tostring(26))
-		  cmd = setTempture("1A")
-	   end
-    
-	   if action == "degree30" then
-		  C4:SetVariable("CURRENT_TEMPRETURE", tostring(30))
-		  cmd = setTempture("1E")
-	   end
-    
-	   if action == "query" then
-		  cmd = query()
-	   end
-	   
-	   if action == "Connect" then
-		  Udp:create().client()
-		  SERVER = tcpServer()
-	   end
-	   
-	   if action == "Disconnect" then
-		  Udp:create().disconnect()
-	   end
-	   local pack = Pack:create()
-	   if action == "K1" then
-		  cmd = pack.lightonHex(1)
-		  C4:SetVariable("Key_ID", 1)
-		  C4:FireEvent("key event")
-	   end
-	   
-	   if action == "K2" then
-		  cmd = pack.lightonHex(2)
-		  C4:SetVariable("Key_ID", 2)
-		  C4:FireEvent("key event")
-	   end
-	   
-	   if action == "K3" then
-		  cmd = pack.lightonHex(3)
-		  C4:SetVariable("Key_ID", 3)
-		  C4:FireEvent("key event")
-	   end
-	   
-	   if action == "K4" then
-		  cmd = pack.lightonHex(4)
-		  C4:SetVariable("Key_ID", 4)
-		  C4:FireEvent("key event")
-	   end
+    airControl(cmd)
+end
+
+function EX_CMD.LUA_ACTION(tParams)
+    local action = tParams["ACTION"]
+    if action == "away" then
+	   cmd = AIR["AWAY"]
     end
+    
+    if action == "on" then
+	   C4:SetVariable("IS_ON", "1", "BOOL")
+	   cmd = poweron()
+    end
+
+    if action == "off" then
+	   C4:SetVariable("IS_ON", "0", "BOOL")
+	   cmd = poweroff()
+    end
+
+    if action == "cool" then
+	   cmd = coolMode()
+    end
+
+    if action == "heat" then
+	   cmd = heatMode()
+    end
+
+    if action == "dry" then
+	   cmd = dryMode()
+    end
+
+    if action == "fan" then
+	   cmd = fanMode()
+    end
+
+    if action == "high" then
+	   cmd = highMode()
+    end
+
+    if action == "middle" then
+	   cmd = middleMode()
+    end
+
+    if action == "low" then
+	   cmd = lowMode()
+    end
+    
+    if action == "degree18" then
+	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(18))
+	   cmd = setTempture("12")
+    end
+    
+    if action == "degree22" then
+	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(22))
+	   cmd = setTempture("16")
+    end
+    
+    if action == "degree26" then
+	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(26))
+	   cmd = setTempture("1A")
+    end
+
+    if action == "degree30" then
+	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(30))
+	   cmd = setTempture("1E")
+    end
+
+    if action == "query" then
+	   cmd = query()
+    end
+    
+    if action == "Connect" then
+	   Udp:create().client()
+	   SERVER = tcpServer()
+    end
+    
+    if action == "Disconnect" then
+	   Udp:create().disconnect()
+    end
+    local pack = Pack:create()
+    if action == "K1" then
+	   cmd = pack.lightonHex(1)
+	   C4:SetVariable("Key_ID", 1)
+	   C4:FireEvent("key event")
+    end
+    
+    if action == "K2" then
+	   cmd = pack.lightonHex(2)
+	   C4:SetVariable("Key_ID", 2)
+	   C4:FireEvent("key event")
+    end
+    
+    if action == "K3" then
+	   cmd = pack.lightonHex(3)
+	   C4:SetVariable("Key_ID", 3)
+	   C4:FireEvent("key event")
+    end
+    
+    if action == "K4" then
+	   cmd = pack.lightonHex(4)
+	   C4:SetVariable("Key_ID", 4)
+	   C4:FireEvent("key event")
+    end
+
     airControl(cmd)
 end
 
@@ -358,41 +379,10 @@ function OnConnectionStatusChanged(idBinding, nPort, strStatus)
     end
 end
 
---外部调用控制空调
-function OnVariableChanged(strName)
-    print("Variable value changed - variable named: " .. strName)
-    print("new value is: " .. Variables[strName])
-    local command = ""
-    if strName == "CONTROL_CMD" then
-	   local cmd = tonumber(Variables[strName])
-	   if cmd == 1 then			--low
-		  C4:UpdateProperty("Server Status", "...")
-		  command = lowMode()
-	   elseif cmd == 2 then		--middle
-		  command = middleMode()
-	   elseif cmd == 3 then		--high
-		  command = highMode()
-	   elseif cmd == 4 then		--dry
-		  command = dryMode()
-	   elseif cmd == 5 then		--fan
-		  command = fanMode()
-	   elseif cmd == 6 then		--heat
-		  command = heatMode()
-	   elseif cmd == 7 then		--cool
-		  command = coolMode()
-	   elseif cmd == 8 then		--off
-		  command = poweroff()
-	   elseif cmd == 9 then		--on
-		  command = poweron()
-	   elseif cmd == 10 then		--away
-		  command = AIR["AWAY"]
-	   elseif cmd == 11 then		--query
-		  command = query()
-	   elseif cmd >15 and cmd < 30 then		--tempreture
-		  command = setTempture(cmd)
-	   end
-	   airControl(command)
-    end
+EX_CMD["TEMPTURE"] = function(tParams)
+    local degree = tParams["degree"]
+    local command = setTempture(degree)
+    airControl(command)
 end
 
 --Init
