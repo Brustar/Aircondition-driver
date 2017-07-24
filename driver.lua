@@ -1,24 +1,6 @@
 require "Udp"
 require "Pack"
-AIR = {}
-
-AIR["ON"] = "31 01"
-AIR["OFF"] = "31 02"
-
-AIR["QUERY_ALL"] = "01 50 FF FF FF FF 52"
-AIR["QUERY"] = "50 01"
-AIR["SETEMP"] = "32"
-AIR["HEAT"] = "33 08"
-AIR["COOL"] = "33 01"
-
-AIR["DRY"] = "33 02"
-AIR["FAN"] = "33 04"
-
-AIR["HIGH"] = "34 01"
-AIR["MIDDLE"] = "34 02"
-AIR["LOW"] = "34 04"
-
-AIR["AWAY"] = "01 31 02 FF FF FF 31"
+require "AirCondition"
 
 SERVER = nil
 EX_CMD = {}
@@ -39,6 +21,7 @@ function dbgStatus(strStatus)
 end
 
 function airControl(cmd)
+    if cmd == nil then return end
     local pkt = tohex(cmd)
     SendToAir(pkt)
 end
@@ -87,74 +70,7 @@ function hexArray(data)
     return ret
 end
 
-function checksum(strPkt)
-  local cs = 0
-  string.gsub(strPkt, "(.)", function(c) cs = cs + string.byte(c) end)
-  return bit.band(cs, 0xff)
-end
-
-function createCMD(cmd,value)
-    local ret = Properties["Gateway"]
-    if value == nil then
-	   ret = ret .. " " .. cmd
-    else
-	   ret = ret .. " " .. cmd .. " " .. value
-    end
-    
-    ret = ret .. " 01 " .. Properties["Addr"]
-    local sum = checksum(tohex(ret))
-    local cs = string.sub(string.format("%#x",sum),3)
-    ret = ret .. " " .. cs
-    
-    return ret
-end
-
-function setTempture(value)
-    return createCMD(AIR["SETEMP"],value)
-end
-
-function heatMode()
-    return createCMD(AIR["HEAT"])
-end
-
-function coolMode()
-    return createCMD(AIR["COOL"])
-end
-
-function dryMode()
-    return createCMD(AIR["DRY"])
-end
-
-function fanMode()
-    return createCMD(AIR["FAN"])
-end
-
-function highMode()
-    return createCMD(AIR["HIGH"])
-end
-
-function middleMode()
-    return createCMD(AIR["MIDDLE"])
-end
-
-function lowMode()
-    return createCMD(AIR["LOW"])
-end
-
-function query()
-    return createCMD(AIR["QUERY"])
-end
-
-function poweron()
-    return createCMD(AIR["ON"])
-end
-
-function poweroff()
-    return createCMD(AIR["OFF"])
-end
-
 function ExecuteCommand(sCommand, tParams)
-
 	-- Remove any spaces (trim the command)
 	local trimmedCommand = string.gsub(sCommand, " ", "")
 
@@ -172,144 +88,30 @@ function ExecuteCommand(sCommand, tParams)
 	end
 end
 
+EX_CMD["TEMPTURE"] = function(tParams)
+    local degree = tParams["degree"]
+    local air = AirCondition:create()
+    local command = air[strCommand](air,degree)
+    airControl(command)
+end
+
 function QueueCommand(strCommand)
-    local cmd = ""
-    if (strCommand == "AWAY") then
-	   cmd = AIR["AWAY"]
-    end
-    if strCommand == "ON" then
-	   C4:SetVariable("IS_ON", "1", "BOOL")
-	   cmd = poweron()
-    end
-    
-    if strCommand == "OFF" then
-	   C4:SetVariable("IS_ON", "0", "BOOL")
-	   cmd = poweroff()
-    end
-    
-    if strCommand == "COOL" then
-	   cmd = coolMode()
-    end
-    
-    if strCommand == "HEAT" then
-	   cmd = heatMode()
-    end
-    
-    if strCommand == "DRY" then
-	   cmd = dryMode()
-    end
-    
-    if strCommand == "FAN" then
-	   cmd = fanMode()
-    end
-    
-    if strCommand == "HIGH" then
-	   cmd = highMode()
-    end
-    
-    if strCommand == "MIDDLE" then
-	   cmd = middleMode()
-    end
-    
-    if strCommand == "LOW" then
-	   cmd = lowMode()
-    end
-	   
-    if strCommand == "D18" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(18))
-	   cmd = setTempture("12")
-    end
-	   
-    if strCommand == "D22" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(22))
-	   cmd = setTempture("16")
-    end
-	   
-    if strCommand == "D26" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(26))
-	   cmd = setTempture("1A")
-    end
-    
-    if strCommand == "D30" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(30))
-	   cmd = setTempture("1E")
-    end
-    
-    if strCommand == "QUERY" then
-	   cmd = query()
+    local air = AirCondition:create()
+    local cmd = nil
+    if air[action] and type(air[action]) == "function" then
+       air[action](air)
     end
     
     airControl(cmd)
 end
 
 function EX_CMD.LUA_ACTION(tParams)
-    local action = tParams["ACTION"]
-    if action == "away" then
-	   cmd = AIR["AWAY"]
+    local action = string.upper(tParams["ACTION"])
+    local air = AirCondition:create()
+    local cmd = nil
+    if air[action] and type(air[action]) == "function" then
+	   air[action](air)
     end
-    
-    if action == "on" then
-	   C4:SetVariable("IS_ON", "1", "BOOL")
-	   cmd = poweron()
-    end
-
-    if action == "off" then
-	   C4:SetVariable("IS_ON", "0", "BOOL")
-	   cmd = poweroff()
-    end
-
-    if action == "cool" then
-	   cmd = coolMode()
-    end
-
-    if action == "heat" then
-	   cmd = heatMode()
-    end
-
-    if action == "dry" then
-	   cmd = dryMode()
-    end
-
-    if action == "fan" then
-	   cmd = fanMode()
-    end
-
-    if action == "high" then
-	   cmd = highMode()
-    end
-
-    if action == "middle" then
-	   cmd = middleMode()
-    end
-
-    if action == "low" then
-	   cmd = lowMode()
-    end
-    
-    if action == "degree18" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(18))
-	   cmd = setTempture("12")
-    end
-    
-    if action == "degree22" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(22))
-	   cmd = setTempture("16")
-    end
-    
-    if action == "degree26" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(26))
-	   cmd = setTempture("1A")
-    end
-
-    if action == "degree30" then
-	   C4:SetVariable("CURRENT_TEMPRETURE", tostring(30))
-	   cmd = setTempture("1E")
-    end
-
-    if action == "query" then
-	   cmd = query()
-    end
-    
     if action == "Connect" then
 	   Udp:create().client()
 	   SERVER = tcpServer()
@@ -377,12 +179,6 @@ function OnConnectionStatusChanged(idBinding, nPort, strStatus)
     if (nPort == UDP_PORT) then
 	   Udp:create().OnConnectionStatusChanged(idBinding, nPort, strStatus)
     end
-end
-
-EX_CMD["TEMPTURE"] = function(tParams)
-    local degree = tParams["degree"]
-    local command = setTempture(degree)
-    airControl(command)
 end
 
 --Init

@@ -102,19 +102,19 @@
       </action>
       <action>
         <name>18℃</name>
-        <command>degree18</command>
+        <command>d18</command>
       </action>
       <action>
         <name>22℃</name>
-        <command>degree22</command>
+        <command>d22</command>
       </action>
       <action>
         <name>26℃</name>
-        <command>degree26</command>
+        <command>d26</command>
       </action>
       <action>
         <name>30℃</name>
-        <command>degree30</command>
+        <command>d30</command>
       </action>
       <action>
         <name>Query</name>
