@@ -1,4 +1,5 @@
 require "Pack"
+require "Visualintercom"
 
 SERVER_PORT = 5009
 MASTER_AUTH = 0x84
@@ -114,34 +115,56 @@ local server = {
                                  client:OnRead(
                                               function(cli, strData)
 										  local pack = Pack:create()
-										  function handle(key)
-											 C4:SetVariable("Key_ID", tostring(key))
-											 C4:FireEvent("key event")
-											 local data =nil
-											 for i =1 , 4 do
-												C4:SetTimer(i*500, function()
-												    if i==key then
-													   data = pack.lightonHex(i)
-												    else
-													   data = pack.lightoffHex(i) 
-												    end
-												
-												    cli:Write(toHex(data))
-												end)
+										  local vi = Visualintercom:create()
+										  if pack.head(strData) == VI_HEAD then
+											 if pack.cmd(strData) == 0x20 then
+												local devices = pack.decode(strData)
+												for _,v in ipairs(devices) do
+												    cli:Write(vi:lightContol(v.deviceID,v.state))
+												end
+											 elseif pack.cmd(strData) == 0x40 then --query
+											 
+											 elseif pack.cmd(strData) == 0x21 then
+												local devices = pack.decode(strData)
+												for _,v in ipairs(devices) do
+												    cli:Write(vi:curtainContol(v.deviceID,v.state))
+												end
+											 elseif pack.cmd(strData) == 0x41 then --query
+											 
+											 elseif pack.cmd(strData) == 0x23 then
+												local sceneID = pack.sceneID(strData)
+												vi:sceneContol(sceneID)
 											 end
+										  else
+											 function handle(key)
+												C4:SetVariable("Key_ID", tostring(key))
+												C4:FireEvent("key event")
+												local data =nil
+												for i =1 , 4 do
+												    C4:SetTimer(i*500, function()
+													   if i==key then
+														  data = pack.lightonHex(i)
+													   else
+														  data = pack.lightoffHex(i) 
+													   end
+												    
+													   cli:Write(toHex(data))
+												    end)
+												end
+											 end
+											 
+											 hexdump(strData, function(s) print("server:<------ " .. s) end)
+											 if strData == pack.keyHex(1) then
+												handle(1)
+											 elseif strData == pack.keyHex(2) then
+												handle(2)
+											 elseif strData == pack.keyHex(3) then
+												handle(3)
+											 elseif strData == pack.keyHex(4) then
+												handle(4)
+											 end
+											 cli:ReadUpTo(10)
 										  end
-										  
-										  hexdump(strData, function(s) print("server:<------ " .. s) end)
-										  if strData == pack.keyHex(1) then
-											 handle(1)
-										  elseif strData == pack.keyHex(2) then
-											 handle(2)
-										  elseif strData == pack.keyHex(3) then
-											 handle(3)
-										  elseif strData == pack.keyHex(4) then
-											 handle(4)
-										  end
-										  cli:ReadUpTo(10)
                                                end
                                         )
                                         :OnWrite(

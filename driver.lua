@@ -82,7 +82,7 @@ function ExecuteCommand(sCommand, tParams)
 		EX_CMD[trimmedCommand](tParams)
 	-- handle the command
 	elseif (sCommand ~= nil) then
-		QueueCommand(sCommand)
+		QueueCommand(sCommand,tParams)
 	else
 		Dbg:Alert("ExecuteCommand: Unhandled command = " .. sCommand)
 	end
@@ -90,16 +90,18 @@ end
 
 EX_CMD["TEMPTURE"] = function(tParams)
     local degree = tParams["degree"]
-    local air = AirCondition:create()
+    local addr = tParams["addr"] or Properties["Addr"]
+    local air = AirCondition:create(addr)
     local command = air[strCommand](air,degree)
     airControl(command)
 end
 
-function QueueCommand(strCommand)
-    local air = AirCondition:create()
+function QueueCommand(strCommand,tParams)
+    local addr = tParams["addr"] or Properties["Addr"]
+    local air = AirCondition:create(addr)
     local cmd = nil
-    if air[action] and type(air[action]) == "function" then
-       air[action](air)
+    if air[strCommand] and type(air[strCommand]) == "function" then
+       cmd = air[strCommand](air)
     end
     
     airControl(cmd)
@@ -107,10 +109,10 @@ end
 
 function EX_CMD.LUA_ACTION(tParams)
     local action = string.upper(tParams["ACTION"])
-    local air = AirCondition:create()
+    local air = AirCondition:create(Properties["Addr"])
     local cmd = nil
     if air[action] and type(air[action]) == "function" then
-	   air[action](air)
+	   cmd = air[action](air)
     end
     if action == "Connect" then
 	   Udp:create().client()
@@ -185,9 +187,12 @@ end
 gDbgTimer, gDbgPrint, gDbgLog = 0, false, false
 gQueue,gSendTimer = {},0
 OnPropertyChanged("Debug Mode")
-C4:AddVariable("CURRENT_TEMPRETURE", "0", "NUMBER")
+
 C4:AddVariable("IS_ON", "1", "BOOL")
+C4:AddVariable("CURRENT_MODE", "0", "NUMBER")
+C4:AddVariable("CURRENT_TEMPRETURE", "0", "NUMBER")
+C4:AddVariable("CURRENT_SPEED", "0", "NUMBER")
+
 C4:AddVariable("CURRENT_FAULT", "0", "NUMBER")
-C4:AddVariable("CONTROL_CMD", "0", "NUMBER")
 
 C4:AddVariable("KEY_ID", "0", "NUMBER")

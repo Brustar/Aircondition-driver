@@ -1,3 +1,5 @@
+require "Pack"
+
 Aircondition = {}
 
 AIR = {}
@@ -20,14 +22,9 @@ AIR["QUERY_ALL"] = "01 50 FF FF FF FF 52"
 AIR["AWAY"] = "01 31 02 FF FF FF 31"
 
 
-function Aircondition:create()
+function Aircondition:create(addr)
     local aircondition = {}
-    
-    function aircondition:checksum(strPkt)
-	   local cs = 0
-	   string.gsub(strPkt, "(.)", function(c) cs = cs + string.byte(c) end)
-	   return bit.band(cs, 0xff)
-    end
+    self.addr = addr
 
     function aircondition:createCMD(cmd,value)
 	   local ret = Properties["Gateway"]
@@ -37,8 +34,9 @@ function Aircondition:create()
 		  ret = ret .. " " .. cmd .. " " .. value
 	   end
 	   
-	   ret = ret .. " 01 " .. Properties["Addr"]
-	   local sum = self:checksum(tohex(ret))
+	   ret = ret .. " 01 " .. self.addr
+       local pack = Pack:create()
+	   local sum = pack.checksum(tohex(ret))
 	   local cs = string.sub(string.format("%#x",sum),3)
 	   ret = ret .. " " .. cs
 	   
@@ -51,30 +49,37 @@ function Aircondition:create()
     end
 
     function aircondition:HEAT()
-	   return self:createCMD(AIR["HEAT"])
+        C4:SetVariable("CURRENT_MODE", 1))
+	    return self:createCMD(AIR["HEAT"])
     end
 
     function aircondition:COOL()
+        C4:SetVariable("CURRENT_MODE", 0))
 	   return self:createCMD(AIR["COOL"])
     end
 
     function aircondition:DRY()
+        C4:SetVariable("CURRENT_MODE", 3))
 	   return self:createCMD(AIR["DRY"])
     end
 
     function aircondition:FAN()
+        C4:SetVariable("CURRENT_MODE", 2))
 	   return self:createCMD(AIR["FAN"])
     end
 
     function aircondition:HIGH()
+        C4:SetVariable("CURRENT_SPEED", 2))
 	   return self:createCMD(AIR["HIGH"])
     end
 
     function aircondition:MIDDLE()
+        C4:SetVariable("CURRENT_SPEED", 1))
 	   return self:createCMD(AIR["MIDDLE"])
     end
 
     function aircondition:LOW()
+        C4:SetVariable("CURRENT_SPEED", 0))
 	   return self:createCMD(AIR["LOW"])
     end
 

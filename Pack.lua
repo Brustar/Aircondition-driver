@@ -6,6 +6,41 @@ KEY_LIGHT_OFF = {"02 06 10 21 00 00 DD 33","02 06 10 22 00 00 2D 33","02 06 10 2
 
 function Pack:create()
     local pack = {}
+
+    function pack.head(data)
+        local _,head=string.unpack(data,"bbb>Hb")
+        return head
+    end
+
+    function pack.cmd(data)
+        local _,_,cmd=string.unpack(data,"bbb>Hb")
+        return cmd
+    end
+
+    function pack.sceneID(data)
+        local _,_,_,_,sceneID=string.unpack(data,"bbb>Hb")
+        return sceneID
+    end
+
+    function pack.decode(data)
+        string pattern = "bbb"
+        local _,_,length=string.unpack(data,pattern)
+        local devices = {}
+        for i=1,length/3 do
+            pattern = pattern .. ">Hb"
+        end
+
+        local params = string.unpack(data,pattern)
+        for i=5,select('#', params),2 do
+            local deviceID = select(i, ...)
+            local state = select(i+1, ...)
+            local device = {}
+            device.deviceID = deviceID
+            device.state = state
+            table.insert(devices,device)
+        end
+        return devices
+    end
     
     function pack.keyHex(num)
 	   return tohex(KEYBOARD_PRESS[num])
@@ -23,6 +58,32 @@ function Pack:create()
 	   local a,b,c,d = string.match(C4:GetControllerNetworkAddress(),"(%d+).(%d+).(%d+).(%d+)")
 	   local pattern = "bbbb>H"
 	   return string.pack(pattern,tonumber(a),tonumber(b),tonumber(c),tonumber(d),SERVER_PORT)
+    end
+
+    function pack.update(cmd,devices)
+    	local pattern = "bbb>Hb"
+    	local data = string.pack(pattern,cmd,3,deviceID,state)
+    	local checksum = pack.checksum(data)
+    	pattern = "bbb>Hbb"
+    	return string.pack(pattern,VI_HEAD,cmd,3,deviceID,state,checksum)
+    end
+
+    function pack.updateAir(cmd,deviceID,addr)
+    	local pattern = "bbbbbbbbbb"
+    	local state = C4:GetVariable(deviceID, 1001)
+    	local mode = C4:GetVariable(deviceID, 1002)
+    	local tempture = C4:GetVariable(deviceID, 1003)
+    	local speed = C4:GetVariable(deviceID, 1004)
+    	local data = string.pack(pattern,VI_HEAD,cmd,addr,deviceID,1,state,mode,tempture,tempture,speed)
+    	local checksum = pack.checksum(data)
+    	pattern = "bbbbbbbbbbb"
+    	return string.pack(pattern,VI_HEAD,cmd,addr,deviceID,1,state,mode,tempture,tempture,speed,checksum)
+    end
+
+    function pack.checksum(strPkt)
+	   local cs = 0
+	   string.gsub(strPkt, "(.)", function(c) cs = cs + string.byte(c) end)
+	   return bit.band(cs, 0xff)
     end
     
     function pack.crc16(pmsg)
