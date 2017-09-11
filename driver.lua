@@ -161,7 +161,7 @@ function EX_CMD.LUA_ACTION(tParams)
 	   cmd = fresh:OFF()
     end
     
-    if action == "FRESH_HIGHT" then
+    if action == "FRESH_HIGH" then
 	   local fresh = Freshair:create()
 	   cmd = fresh:HIGH()
     end

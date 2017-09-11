@@ -102,7 +102,7 @@ function Pack:create()
 		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(bit.rshift(temp , 4) , crc) , 15)+1] , bit.rshift(crc , 4));
 	    end
 
-	    local ret = string.format("%4x",crc):gsub("(..)(..)","%2 %1")
+	    local ret = string.format("%04x",crc):gsub("(..)(..)","%2%1")
 	    return ret
     end
     

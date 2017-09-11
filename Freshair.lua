@@ -7,7 +7,7 @@ CONTROL_OFF = "00"
 
 CONTROL_WRITE = "00 03"
 
-CONTROL_HIGHT = "03"
+CONTROL_HIGH = "03"
 CONTROL_MIDDLE = "02"
 CONTROL_LOW = "01"
 CONTROL_STOP = "00"
@@ -17,8 +17,10 @@ function Freshair:create()
 
     function freshair:createCMD(action)
     	local cmd = CONTROL_ADDR .. " " .. CONTROL_WRITE .." 00 " .. action
+	
 	local pack = Pack:create()
 	cmd = cmd .. " " .. pack.crc16(tohex(cmd))
+
 	return cmd
     end
     
@@ -31,8 +33,8 @@ function Freshair:create()
     end
 
 
-    function freshair:HIGHT()
-    	return self:createCMD(CONTROL_HIGHT)
+    function freshair:HIGH()
+    	return self:createCMD(CONTROL_HIGH)
     end
 
     function freshair:MIDDLE()
