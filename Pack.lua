@@ -23,7 +23,7 @@ function Pack:create()
     end
 
     function pack.decode(data)
-        string pattern = "bbb"
+        local pattern = "bbb"
         local _,_,length=string.unpack(data,pattern)
         local devices = {}
         for i=1,length/3 do
@@ -32,8 +32,8 @@ function Pack:create()
 
         local params = string.unpack(data,pattern)
         for i=5,select('#', params),2 do
-            local deviceID = select(i, ...)
-            local state = select(i+1, ...)
+            local deviceID = select(i, params)
+            local state = select(i+1, params)
             local device = {}
             device.deviceID = deviceID
             device.state = state
@@ -102,7 +102,7 @@ function Pack:create()
 		    crc	 =  bit.bxor(crc_table[bit.band(bit.bxor(bit.rshift(temp , 4) , crc) , 15)+1] , bit.rshift(crc , 4));
 	    end
 
-	    local ret = string.format("%4x",crc):gsub("(..)(..)","%2%1")
+	    local ret = string.format("%4x",crc):gsub("(..)(..)","%2 %1")
 	    return ret
     end
     

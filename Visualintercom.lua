@@ -11,7 +11,7 @@ function Visualintercom:create()
         elseif state == 1 then
             C4:SendToDevice(deviceID,"OFF",{})
         elseif state>=2 and state<=11 then
-            C4:SendToDevice(deviceID,"RAMP_TO_LEVEL", {LEVEL = (state-1)*10), TIME = 1000})
+            C4:SendToDevice(deviceID,"RAMP_TO_LEVEL", {LEVEL = (state-1)*10, TIME = 1000})
         end
         local variable = C4:GetVariable(deviceID, 1000) or "0"
         return pack.updateOne(0x30,deviceID,variable)

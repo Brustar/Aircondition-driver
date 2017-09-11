@@ -1,6 +1,7 @@
 require "Udp"
 require "Pack"
-require "AirCondition"
+require "Aircondition"
+require "Freshair"
 
 SERVER = nil
 EX_CMD = {}
@@ -21,6 +22,7 @@ function dbgStatus(strStatus)
 end
 
 function airControl(cmd)
+    print("cmd:",cmd)
     if cmd == nil then return end
     local pkt = tohex(cmd)
     SendToAir(pkt)
@@ -47,7 +49,7 @@ function ProcessQueue()
     local pkt = table.remove(gQueue, 1)
     if (pkt ~= nil) then
       --gSendTimer = C4:AddTimer(3000, "MILLISECONDS")
-      hexdump(pkt, function(s) dbg("------> " .. s) end)
+      hexdump(pkt, function(s) print("------> " .. s) end)
       -- Track Enquiry going out...
       if (string.byte(string.sub(pkt, 1, 1)) == 0x83) then
         gLastEnquiry = string.byte(string.sub(pkt, 3, 3))  -- Track Enquiries...
@@ -91,14 +93,14 @@ end
 EX_CMD["TEMPTURE"] = function(tParams)
     local degree = tParams["degree"]
     local addr = tParams["addr"] or Properties["Addr"]
-    local air = AirCondition:create(addr)
+    local air = Aircondition:create(addr)
     local command = air[strCommand](air,degree)
     airControl(command)
 end
 
 function QueueCommand(strCommand,tParams)
     local addr = tParams["addr"] or Properties["Addr"]
-    local air = AirCondition:create(addr)
+    local air = Aircondition:create(addr)
     local cmd = nil
     if air[strCommand] and type(air[strCommand]) == "function" then
        cmd = air[strCommand](air)
@@ -109,8 +111,10 @@ end
 
 function EX_CMD.LUA_ACTION(tParams)
     local action = string.upper(tParams["ACTION"])
-    local air = AirCondition:create(Properties["Addr"])
+    print("action",action)
+    local air = Aircondition:create(Properties["Addr"])
     local cmd = nil
+
     if air[action] and type(air[action]) == "function" then
 	   cmd = air[action](air)
     end
@@ -145,6 +149,36 @@ function EX_CMD.LUA_ACTION(tParams)
 	   cmd = pack.lightonHex(4)
 	   C4:SetVariable("Key_ID", 4)
 	   C4:FireEvent("key event")
+    end
+    
+    if action == "FRESH_ON" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:ON()
+    end
+    
+    if action == "FRESH_OFF" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:OFF()
+    end
+    
+    if action == "FRESH_HIGHT" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:HIGH()
+    end
+    
+    if action == "FRESH_MIDDLE" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:MIDDLE()
+    end
+    
+    if action == "FRESH_LOW" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:LOW()
+    end
+    
+    if action == "FRESH_STOP" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:STOP()
     end
 
     airControl(cmd)

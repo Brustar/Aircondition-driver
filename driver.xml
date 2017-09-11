@@ -19,7 +19,7 @@
     <proxy>base_template</proxy>
   </proxies>
   <config>
-    <script file="driver.lua" encryption="2"></script>
+    <script file="driver.lua"></script>
     <documentation file="documentation.rtf" />
     <properties>
       <property>
@@ -102,19 +102,19 @@
       </action>
       <action>
         <name>18℃</name>
-        <command>d18</command>
+        <command>eighteen</command>
       </action>
       <action>
         <name>22℃</name>
-        <command>d22</command>
+        <command>twenty_two</command>
       </action>
       <action>
         <name>26℃</name>
-        <command>d26</command>
+        <command>twenty_six</command>
       </action>
       <action>
         <name>30℃</name>
-        <command>d30</command>
+        <command>thirty</command>
       </action>
       <action>
         <name>Query</name>
@@ -143,6 +143,30 @@
       <action>
         <name>K4</name>
         <command>K4</command>
+      </action>
+      <action>
+        <name>Fresh_ON</name>
+        <command>FRESH_ON</command>
+      </action>
+      <action>
+        <name>Fresh_OFF</name>
+        <command>FRESH_OFF</command>
+      </action>
+      <action>
+        <name>Fresh_HIGHT</name>
+        <command>FRESH_HIGH</command>
+      </action>
+      <action>
+        <name>Fresh_MIDDLE</name>
+        <command>FRESH_MIDDLE</command>
+      </action>
+      <action>
+        <name>Fresh_LOW</name>
+        <command>FRESH_LOW</command>
+      </action>
+      <action>
+        <name>Fresh_STOP</name>
+        <command>FRESH_STOP</command>
       </action>
     </actions>
     <power_management_method>AlwaysOn</power_management_method>
