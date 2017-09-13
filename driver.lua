@@ -186,9 +186,9 @@ function EX_CMD.LUA_ACTION(tParams)
 	   cmd = fresh:LOW()
     end
     
-    if action == "FRESH_STOP" then
+    if action == "FRESH_WIND" then
 	   local fresh = Freshair:create()
-	   cmd = fresh:STOP()
+	   cmd = fresh:WIND()
     end
 
     airControl(cmd)

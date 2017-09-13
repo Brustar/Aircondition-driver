@@ -165,8 +165,8 @@
         <command>FRESH_LOW</command>
       </action>
       <action>
-        <name>Fresh_STOP</name>
-        <command>FRESH_STOP</command>
+        <name>Fresh_WIND</name>
+        <command>FRESH_WIND</command>
       </action>
     </actions>
     <power_management_method>AlwaysOn</power_management_method>

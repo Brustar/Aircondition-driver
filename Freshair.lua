@@ -90,5 +90,9 @@ function Freshair:create()
     	 return self:createCMD(CONTROL_AUTO)
     end
     
+    function freshair:SETEMP(value)
+        C4:SetVariable("CURRENT_TEMPRETURE", value)
+    end
+    
     return freshair
 end
