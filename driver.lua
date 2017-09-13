@@ -99,8 +99,17 @@ EX_CMD["TEMPTURE"] = function(tParams)
 end
 
 function QueueCommand(strCommand,tParams)
-    local addr = tParams["addr"] or Properties["Addr"]
+    local addr = Properties["Addr"]
+    if(tParams and tParams["addr"]) then
+	    addr = tParams["addr"]
+    end
+    local s,_=string.find(strCommand, "FRESH")
     local air = Aircondition:create(addr)
+    if (s==1) then
+	   air = Freshair:create()
+	   local index,_ =string.find(strCommand, "_")
+	   strCommand = strCommand:sub(index+1)
+    end
     local cmd = nil
     if air[strCommand] and type(air[strCommand]) == "function" then
        cmd = air[strCommand](air)
@@ -111,7 +120,7 @@ end
 
 function EX_CMD.LUA_ACTION(tParams)
     local action = string.upper(tParams["ACTION"])
-    print("action",action)
+
     local air = Aircondition:create(Properties["Addr"])
     local cmd = nil
 

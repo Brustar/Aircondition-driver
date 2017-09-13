@@ -215,24 +215,48 @@
         <description>set wind to low speed</description>
       </command>
       <command>
-        <name>D18</name>
+        <name>EIGHTEEN</name>
         <description>set tempture to 18℃</description>
       </command>
       <command>
-        <name>D22</name>
+        <name>TWENTY_TWO</name>
         <description>set tempture to 22℃</description>
       </command>
       <command>
-        <name>D26</name>
+        <name>TWENTY_SIX</name>
         <description>set tempture to 26℃</description>
       </command>
       <command>
-        <name>D30</name>
+        <name>THIRTY</name>
         <description>set tempture to 30℃</description>
       </command>
       <command>
         <name>QUERY</name>
         <description>query all state of airconditions</description>
+      </command>
+      <command>
+        <name>FRESH_ON</name>
+        <description>set fresh air power on</description>
+      </command>
+      <command>
+        <name>FRESH_OFF</name>
+        <description>set fresh air power off</description>
+      </command>
+      <command>
+        <name>FRESH_HIGH</name>
+        <description>set fresh air to hight</description>
+      </command>
+      <command>
+        <name>FRESH_MIDDLE</name>
+        <description>set fresh air to middle</description>
+      </command>
+      <command>
+        <name>FRESH_LOW</name>
+        <description>set fresh air to low</description>
+      </command>
+      <command>
+        <name>FRESH_WIND</name>
+        <description>set fresh air to wind mode</description>
       </command>
     </commands>
     <serialsettings>9600 8 none 1 none 485</serialsettings>

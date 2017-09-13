@@ -2,8 +2,27 @@ Visualintercom = {}
 
 VI_HEAD = 0XAA
 
+VI_ADDR = 0x0F
+
+VI_CMD_AUTHOR = 0x11
+
+VI_RES_AUTHOR = 0x12
+
+VI_CMD_BEAT = 0x13
+
+CMD_QUTHOR = "AA 11 01 F0 AC"
+CMD_UPLOAD_STATE = "AA 13 01 F0 AE"
+
 function Visualintercom:create()
     local visualintercom = {}
+
+    function visualintercom:author()
+        return tohex(CMD_QUTHOR)
+    end
+
+    function visualintercom:uploadState()
+        return tohex(CMD_UPLOAD_STATE)
+    end
 
     function visualintercom:lightContol(deviceID,state)
         if state == 0 then 
@@ -17,7 +36,7 @@ function Visualintercom:create()
         return pack.updateOne(0x30,deviceID,variable)
     end 
 
-    function visualintercom:lightQuery(deviceID)
+    function visualintercom:lightFB(deviceID)
 
     end
 
@@ -36,7 +55,7 @@ function Visualintercom:create()
         return pack.updateOne(0x31,deviceID,variable) 
     end
 
-    function visualintercom:curtainQuery(deviceID)
+    function visualintercom:curtainFB(deviceID)
     end
 
     function visualintercom:airControl(deviceID,power,mode,tempture,speed)
@@ -84,7 +103,7 @@ function Visualintercom:create()
         return pack.airUpdate(deviceID)
     end
 
-    function visualintercom:airQuery(deviceID)
+    function visualintercom:airFB(deviceID)
     end
 
     function visualintercom:sceneControl(sceneID)

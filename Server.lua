@@ -103,6 +103,7 @@ local server = {
                                  -- client is a C4LuaTcpClient instance of the new connection that was just accepted
                                  C4:UpdateProperty("Server Status", "A client accept success")
 						   print("Connection on server " .. tostring(srv) .. " accepted, client: " .. tostring(client))
+               cli:Write(vi:author())
 						   client:ReadUpTo(10)
                                  if (self.clientsCnt >= maxClients) then
 							 client:Write(""):Close(true)
@@ -134,6 +135,9 @@ local server = {
 											 elseif pack.cmd(strData) == 0x23 then
 												local sceneID = pack.sceneID(strData)
 												vi:sceneContol(sceneID)
+                       elseif pack.cmd(strData) == 0x12 then
+                        print("author...........")
+                        cli:Write(vi:updateState())
 											 end
 										  else
 											 function handle(key)
