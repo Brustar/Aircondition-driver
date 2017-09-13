@@ -3,6 +3,7 @@ require "Pack"
 require "Aircondition"
 require "Freshair"
 
+
 SERVER = nil
 EX_CMD = {}
 function OnDriverInit()
