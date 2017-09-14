@@ -4,6 +4,8 @@ require "Visualintercom"
 SERVER_PORT = 5009
 MASTER_AUTH = 0x84
 
+TCP_BUFFER = 12
+
 local server = {
       clients = {},
       clientsCnt = 0,
@@ -103,8 +105,8 @@ local server = {
                                  -- client is a C4LuaTcpClient instance of the new connection that was just accepted
                                  C4:UpdateProperty("Server Status", "A client accept success")
 						   print("Connection on server " .. tostring(srv) .. " accepted, client: " .. tostring(client))
-               cli:Write(vi:author())
-						   client:ReadUpTo(10)
+						   --client:Write(vi:author())
+						   client:ReadUpTo(TCP_BUFFER)
                                  if (self.clientsCnt >= maxClients) then
 							 client:Write(""):Close(true)
 							 return
@@ -115,29 +117,28 @@ local server = {
                                  local info = {}
                                  client:OnRead(
                                               function(cli, strData)
+										  hexdump(strData, function(s) print("server:<------ " .. s) end)
 										  local pack = Pack:create()
 										  local vi = Visualintercom:create()
 										  if pack.head(strData) == VI_HEAD then
 											 if pack.cmd(strData) == 0x20 then
-												local devices = pack.decode(strData)
-												for _,v in ipairs(devices) do
-												    cli:Write(vi:lightContol(v.deviceID,v.state))
-												end
-											 elseif pack.cmd(strData) == 0x40 then --query
+												local v = pack.decode(strData)
+												vi:lightContol(v.deviceID,v.state)
+											 elseif pack.cmd(strData) == 0x24 then -- fresh air
 											 
 											 elseif pack.cmd(strData) == 0x21 then
-												local devices = pack.decode(strData)
-												for _,v in ipairs(devices) do
-												    cli:Write(vi:curtainContol(v.deviceID,v.state))
-												end
-											 elseif pack.cmd(strData) == 0x41 then --query
-											 
+												local v = pack.decode(strData)
+												vi:curtainContol(v.deviceID,v.state)
+											 elseif pack.cmd(strData) == 0x22 then
+												local air = pack.decodeAir(strData)
+												vi:airControl(air.deviceID,air.state,air.mode,air.temp,air.speed)
 											 elseif pack.cmd(strData) == 0x23 then
 												local sceneID = pack.sceneID(strData)
 												vi:sceneContol(sceneID)
-                       elseif pack.cmd(strData) == 0x12 then
-                        print("author...........")
-                        cli:Write(vi:updateState())
+											 
+											 elseif pack.cmd(strData) == 0x12 then
+												print("author...........")
+												cli:Write(vi:updateState())
 											 end
 										  else
 											 function handle(key)
@@ -157,7 +158,6 @@ local server = {
 												end
 											 end
 											 
-											 hexdump(strData, function(s) print("server:<------ " .. s) end)
 											 if strData == pack.keyHex(1) then
 												handle(1)
 											 elseif strData == pack.keyHex(2) then
@@ -167,8 +167,8 @@ local server = {
 											 elseif strData == pack.keyHex(4) then
 												handle(4)
 											 end
-											 cli:ReadUpTo(10)
 										  end
+										  cli:ReadUpTo(TCP_BUFFER)
                                                end
                                         )
                                         :OnWrite(
@@ -176,7 +176,7 @@ local server = {
                                                       -- cli is the C4LuaTcpClient instance (same as client in the OnAccept handler).  This callback is called when
                                                       -- all data was sent.
                                                       print("Server " .. tostring(srv) .. " Client " .. tostring(client) .. " Data was sent.")
-										    cli:ReadUpTo(10)
+										    cli:ReadUpTo(TCP_BUFFER)
                                                end
                                         )
                                         :OnDisconnect(

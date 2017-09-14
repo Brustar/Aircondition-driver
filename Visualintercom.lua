@@ -32,8 +32,6 @@ function Visualintercom:create()
         elseif state>=2 and state<=11 then
             C4:SendToDevice(deviceID,"RAMP_TO_LEVEL", {LEVEL = (state-1)*10, TIME = 1000})
         end
-        local variable = C4:GetVariable(deviceID, 1000) or "0"
-        return pack.updateOne(0x30,deviceID,variable)
     end 
 
     function visualintercom:lightFB(deviceID)
@@ -50,15 +48,13 @@ function Visualintercom:create()
             control = "STOP"
         end
         C4:SendToDevice(deviceID,control,{})
-
-        local variable = C4:GetVariable(deviceID, 1000) or "0"
-        return pack.updateOne(0x31,deviceID,variable) 
     end
 
     function visualintercom:curtainFB(deviceID)
     end
 
     function visualintercom:airControl(deviceID,power,mode,tempture,speed)
+	   print(deviceID,power,mode,tempture,speed)
         if power==0 then
             C4:SendToDevice(deviceID,"OFF",{})
         end
@@ -83,7 +79,6 @@ function Visualintercom:create()
             C4:SendToDevice(deviceID,"DRY",{})
         end
 
-
         if tempture>=20 and tempture<=60 then
             C4:SendToDevice(deviceID,"SETEMP",{degree = math.floor(tempture/2)})
         end
@@ -100,7 +95,6 @@ function Visualintercom:create()
             C4:SendToDevice(deviceID,"HIGH",{})
         end
 
-        return pack.airUpdate(deviceID)
     end
 
     function visualintercom:airFB(deviceID)

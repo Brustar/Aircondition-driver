@@ -4,44 +4,36 @@ KEYBOARD_PRESS = {"02 20 10 11 00 01 00 80 4E E3","02 20 10 12 00 01 00 80 0A E3
 KEY_LIGHT_ON = {"02 06 10 21 00 01 1C F3","02 06 10 22 00 01 EC F3","02 06 10 23 00 01 BD 33","02 06 10 24 00 01 0C F2"}
 KEY_LIGHT_OFF = {"02 06 10 21 00 00 DD 33","02 06 10 22 00 00 2D 33","02 06 10 23 00 00 7C F3","02 06 10 24 00 00 CD 32"}
 
+PATTERN = "bbb>Hbb"
+
 function Pack:create()
     local pack = {}
 
     function pack.head(data)
-        local _,head=string.unpack(data,"bbb>Hb")
+        local _,head=string.unpack(data,PATTERN)
         return head
     end
 
     function pack.cmd(data)
-        local _,_,cmd=string.unpack(data,"bbb>Hb")
+        local _,_,cmd=string.unpack(data,PATTERN)
         return cmd
     end
 
     function pack.sceneID(data)
-        local _,_,_,_,sceneID=string.unpack(data,"bbb>Hb")
+        local _,_,_,_,sceneID=string.unpack(data,PATTERN)
         return sceneID
     end
-
+ 
     function pack.decode(data)
-        local pattern = "bbb"
-        local _,_,length=string.unpack(data,pattern)
-        local devices = {}
-        for i=1,length/3 do
-            pattern = pattern .. ">Hb"
-        end
+        local _,_,_,_,deviceid,state = string.unpack(data,PATTERN)
 
-        local params = string.unpack(data,pattern)
-        for i=5,select('#', params),2 do
-            local deviceID = select(i, params)
-            local state = select(i+1, params)
-            local device = {}
-            device.deviceID = deviceID
-            device.state = state
-            table.insert(devices,device)
-        end
-        return devices
+	   local device = {}
+	   device.deviceID = deviceid
+	   device.state = state
+	   return device
+
     end
-    
+
     function pack.keyHex(num)
 	   return tohex(KEYBOARD_PRESS[num])
     end
@@ -61,23 +53,23 @@ function Pack:create()
     end
 
     function pack.update(cmd,devices)
-    	local pattern = "bbb>Hb"
+    	local pattern = "bbb>Hbb"
     	local data = string.pack(pattern,cmd,3,deviceID,state)
     	local checksum = pack.checksum(data)
     	pattern = "bbb>Hbb"
     	return string.pack(pattern,VI_HEAD,cmd,3,deviceID,state,checksum)
     end
 
-    function pack.updateAir(cmd,deviceID,addr)
+    function pack.decodeAir(data)
     	local pattern = "bbbbbbbbbb"
-    	local state = C4:GetVariable(deviceID, 1001)
-    	local mode = C4:GetVariable(deviceID, 1002)
-    	local tempture = C4:GetVariable(deviceID, 1003)
-    	local speed = C4:GetVariable(deviceID, 1004)
-    	local data = string.pack(pattern,VI_HEAD,cmd,addr,deviceID,1,state,mode,tempture,tempture,speed)
-    	local checksum = pack.checksum(data)
-    	pattern = "bbbbbbbbbbb"
-    	return string.pack(pattern,VI_HEAD,cmd,addr,deviceID,1,state,mode,tempture,tempture,speed,checksum)
+    	local _,_,_,_,addr,_,state,mode,temp,speed= string.unpack(data,pattern)
+	local air = {}
+	air.deviceID = addr
+	air.state = state
+	air.mode = mode
+	air.temp = temp
+	air.speed = speed
+	return air
     end
 
     function pack.checksum(strPkt)
