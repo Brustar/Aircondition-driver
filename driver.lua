@@ -102,7 +102,7 @@ end
 function QueueCommand(strCommand,tParams)
     local addr = Properties["Addr"]
     if(tParams and tParams["addr"]) then
-	    addr = tParams["addr"]
+	    addr = string.format("%04x",tonumber(tParams["addr"]))
     end
     local s,_=string.find(strCommand, "FRESH")
     local air = Aircondition:create(addr)
