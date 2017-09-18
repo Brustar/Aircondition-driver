@@ -125,7 +125,8 @@ local server = {
 												local v = pack.decode(strData)
 												vi:lightContol(v.deviceID,v.state)
 											 elseif pack.cmd(strData) == 0x24 then -- fresh air
-											 
+												local v = pack.decode(strData)
+												vi:freshControl()
 											 elseif pack.cmd(strData) == 0x21 then
 												local v = pack.decode(strData)
 												vi:curtainContol(v.deviceID,v.state)
@@ -137,7 +138,6 @@ local server = {
 												vi:sceneContol(sceneID)
 											 
 											 elseif pack.cmd(strData) == 0x12 then
-												print("author...........")
 												cli:Write(vi:updateState())
 											 end
 										  else

@@ -99,6 +99,10 @@ function Visualintercom:create()
 
     function visualintercom:airFB(deviceID)
     end
+    
+    function visualintercom:freshControl()
+	   
+    end
 
     function visualintercom:sceneControl(sceneID)
         C4:SetVariable("SCENE_ID", tostring(pack.deviceID))

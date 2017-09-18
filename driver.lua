@@ -93,9 +93,12 @@ end
 
 EX_CMD["TEMPTURE"] = function(tParams)
     local degree = tParams["degree"]
-    local addr = tParams["addr"] or Properties["Addr"]
+    local addr = Properties["Addr"]
+    if(tParams and tParams["addr"]) then
+	    addr = string.format("%04x",tonumber(tParams["addr"]))
+    end
     local air = Aircondition:create(addr)
-    local command = air[strCommand](air,degree)
+    local command = air["SETEMP"](air,degree)
     airControl(command)
 end
 

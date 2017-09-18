@@ -71,11 +71,10 @@ function Freshair:create()
     end
     
     function freshair:READ()
-    	 local cmd = CONTROL_READ
-	 local pack = Pack:create()
-	 cmd = cmd .. " " .. pack.crc16(tohex(cmd))
-
-	 return cmd
+        local cmd = CONTROL_READ
+	   local pack = Pack:create()
+	   cmd = cmd .. " " .. pack.crc16(tohex(cmd))
+	   return cmd
     end
     
     function freshair:WIND()
