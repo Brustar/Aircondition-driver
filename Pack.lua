@@ -59,6 +59,17 @@ function Pack:create()
     	pattern = "bbb>Hbb"
     	return string.pack(pattern,VI_HEAD,cmd,3,deviceID,state,checksum)
     end
+    
+    function pack.decodeAirFB(data)
+	   local pattern = "bbbbbbbbbbbbbbb"
+	   local _,_,_,_,_,_,_,power,_,mode,speed,temp = string.unpack(data,pattern)
+	   local air = {}
+	   air.mode = mode
+	   air.speed = speed
+	   air.temp = temp
+	   air.power = power
+	   return air
+    end
 
     function pack.decodeAir(data)
     	local pattern = "bbbbbbbbbb"

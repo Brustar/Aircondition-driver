@@ -4,7 +4,7 @@ require "Visualintercom"
 SERVER_PORT = 5009
 MASTER_AUTH = 0x84
 
-TCP_BUFFER = 12
+TCP_BUFFER = 21
 
 local server = {
       clients = {},
@@ -139,6 +139,11 @@ local server = {
 											 
 											 elseif pack.cmd(strData) == 0x12 then
 												cli:Write(vi:updateState())
+											 elseif pack.cmd(strData) == 0x50 then
+												local air = pack.decodeAirFB(strData)
+												C4:SetVariable("CURRENT_TEMPRETURE", air.temp)
+												C4:SetVariable("IS_ON", air.power)
+												C4:SetVariable("CURRENT_MODE", air.mode)
 											 end
 										  else
 											 function handle(key)
