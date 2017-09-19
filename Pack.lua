@@ -60,8 +60,13 @@ function Pack:create()
     	return string.pack(pattern,VI_HEAD,cmd,3,deviceID,state,checksum)
     end
     
-    --01 03 10 00 09 00 24 00 08 00 15 00 22 00 05 00 00 00 20
     function pack.decodeFresh(data)
+	   local pattern = "bbbbbbbbbbbbbbbbbbb"
+	   local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,power= string.unpack(data,pattern)
+    end
+    
+    --01 03 10 00 09 00 24 00 08 00 15 00 22 00 05 00 00 00 20
+    function pack.decodeFreshFB(data)
 	   local pattern = "bbbbbbbbbbbbbbbbbbb"
 	   local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,power= string.unpack(data,pattern)
 	   C4:SetVariable("FRESH_POWER", power==0x20)  

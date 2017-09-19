@@ -124,8 +124,8 @@ local server = {
 											 if pack.cmd(strData) == 0x20 then
 												local v = pack.decode(strData)
 												vi:lightContol(v.deviceID,v.state)
-											 elseif pack.cmd(strData) == 0x24 then -- fresh air
-												local v = pack.decode(strData)
+											 elseif pack.cmd(strData) == 0x24 then -- fresh air from vi
+												local v = pack.decodeFresh(strData)
 												vi:freshControl()
 											 elseif pack.cmd(strData) == 0x21 then
 												local v = pack.decode(strData)
@@ -144,6 +144,8 @@ local server = {
 												C4:SetVariable("CURRENT_TEMPRETURE", air.temp)
 												C4:SetVariable("IS_ON", air.power)
 												C4:SetVariable("CURRENT_MODE", air.mode)
+                      elseif pack.cmd(strData) == 0x03 then
+                          pack.decodeFreshFB(strData)
 											 end
 										  else
 											 function handle(key)
