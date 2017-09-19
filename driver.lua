@@ -243,3 +243,5 @@ C4:AddVariable("CURRENT_SPEED", "0", "NUMBER")
 C4:AddVariable("CURRENT_FAULT", "0", "NUMBER")
 
 C4:AddVariable("KEY_ID", "0", "NUMBER")
+
+C4:AddVariable("FRESH_POWER", "1", "BOOL")
