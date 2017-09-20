@@ -144,12 +144,12 @@ local server = {
 											 end
 										  elseif pack.head(strData) == 0x01 then
 											 if pack.cmd(strData) == 0x50 then
-												print("----------------------")
 												local air = pack.decodeAirFB(strData)
 												print(air.temp,air.power,air.mode)
 												C4:SetVariable("CURRENT_TEMPRETURE", tostring(air.temp))
 												C4:SetVariable("IS_ON", tostring(air.power))
 												C4:SetVariable("CURRENT_MODE", tostring(air.mode))
+												C4:SetVariable("SETTING_TEMPRETURE", tostring(air.setemp))
 											 elseif pack.cmd(strData) == 0x03 then
 												print(strData)
 												pack.decodeFreshFB(strData)

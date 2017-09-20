@@ -70,18 +70,18 @@ function Pack:create()
     function pack.decodeFreshFB(data)
 	   local pattern = "bbbbbbbbbbbbbbbbbbb"
 	   local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,power= string.unpack(data,pattern)
-	   print("power:",power)
 	   C4:SetVariable("FRESH_POWER", tostring(power==0x20))  
     end
     
     function pack.decodeAirFB(data)
 	   local pattern = "bbbbbbbbbbbbbbb"
-	   local _,_,_,_,_,_,_,power,_,mode,speed,temp = string.unpack(data,pattern)
+	   local _,_,_,_,_,_,_,power,setemp,mode,speed,temp = string.unpack(data,pattern)
 	   local air = {}
 	   air.mode = mode
 	   air.speed = speed
 	   air.temp = temp
 	   air.power = power
+	   air.setemp = setemp
 	   return air
     end
 
