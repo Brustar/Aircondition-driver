@@ -120,7 +120,6 @@ local server = {
 										  hexdump(strData, function(s) print("server:<------ " .. s) end)
 										  local pack = Pack:create()
 										  local vi = Visualintercom:create()
-										  print("cmd:",pack.cmd(strData))
 										  if pack.head(strData) == VI_HEAD then
 											 if pack.cmd(strData) == 0x20 then
 												local v = pack.decode(strData)
@@ -145,13 +144,13 @@ local server = {
 										  elseif pack.head(strData) == 0x01 then
 											 if pack.cmd(strData) == 0x50 then
 												local air = pack.decodeAirFB(strData)
-												print(air.temp,air.power,air.mode)
+												print(air.temp,air.power,air.mode,air.speed,air.setemp)
 												C4:SetVariable("CURRENT_TEMPRETURE", tostring(air.temp))
 												C4:SetVariable("IS_ON", tostring(air.power))
 												C4:SetVariable("CURRENT_MODE", tostring(air.mode))
 												C4:SetVariable("SETTING_TEMPRETURE", tostring(air.setemp))
+												C4:SetVariable("CURRENT_SPEED", tostring(air.speed))
 											 elseif pack.cmd(strData) == 0x03 then
-												print(strData)
 												pack.decodeFreshFB(strData)
 											 end
 										  else
