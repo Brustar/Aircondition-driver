@@ -193,6 +193,11 @@ function EX_CMD.LUA_ACTION(tParams)
 	   local fresh = Freshair:create()
 	   cmd = fresh:WIND()
     end
+    
+    if action == "FRESH_READ" then
+	   local fresh = Freshair:create()
+	   cmd = fresh:READ()
+    end
 
     airControl(cmd)
 end

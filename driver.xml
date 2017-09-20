@@ -168,6 +168,10 @@
         <name>Fresh_WIND</name>
         <command>FRESH_WIND</command>
       </action>
+      <action>
+        <name>Fresh_READ</name>
+        <command>FRESH_READ</command>
+      </action>
     </actions>
     <power_management_method>AlwaysOn</power_management_method>
     <power_delay>0</power_delay>

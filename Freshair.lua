@@ -53,11 +53,13 @@ function Freshair:create()
     function freshair:createCMD(action)
     local cmd = CONTROL_NUMBER ..' '.. CONTROL_WRITE ..' '.. CONTROL_WRITE_ADDR ..' ' .. CONTROL_REGISTER .. ' ' .. CONTROL_LENGTH
     if (action==CONTROL_OFF) then
-	   cmd = cmd .. " " ..CONTROL_COOL .. " " .. "00 02" .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_OFF 
+	   cmd = cmd .. " " .. CONTROL_WIND .. " " .. "00 08" .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_OFF 
     elseif (action==CONTROL_WIND) then
 	   cmd = cmd .. " " .. CONTROL_WIND .. " " .. CONTROL_AUTO .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_ON
+    elseif (action==CONTROL_ON) then
+	   cmd = cmd .. " " .. CONTROL_WIND .. " " .. CONTROL_AUTO .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_ON
     else
-	   cmd = cmd .. " " ..CONTROL_COOL .. " " .. action .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_ON 
+	   cmd = cmd .. " " .. CONTROL_WIND .. " " .. action .. " " .. CONTROL_EMPTY .. " " .. CONTROL_TEMPELATE .. " " .. "00 00 00 05 00 00" .. CONTROL_ON 
     end 
 	local pack = Pack:create()
 	cmd = cmd .. " " .. pack.crc16(tohex(cmd))
