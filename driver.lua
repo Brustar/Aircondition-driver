@@ -240,7 +240,7 @@ gDbgTimer, gDbgPrint, gDbgLog = 0, false, false
 gQueue,gSendTimer = {},0
 OnPropertyChanged("Debug Mode")
 
-C4:AddVariable("IS_ON", "1", "BOOL")
+C4:AddVariable("IS_ON", "0", "BOOL")
 C4:AddVariable("CURRENT_MODE", "0", "NUMBER")
 C4:AddVariable("CURRENT_TEMPRETURE", "0", "NUMBER")
 C4:AddVariable("CURRENT_SPEED", "0", "NUMBER")
@@ -249,5 +249,5 @@ C4:AddVariable("CURRENT_FAULT", "0", "NUMBER")
 
 C4:AddVariable("KEY_ID", "0", "NUMBER")
 
-C4:AddVariable("FRESH_POWER", "1", "BOOL")
+C4:AddVariable("FRESH_POWER", "0", "BOOL")
 C4:AddVariable("SETTING_TEMPRETURE", "0", "NUMBER")

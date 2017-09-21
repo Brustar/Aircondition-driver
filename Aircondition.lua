@@ -43,42 +43,34 @@ function Aircondition:create(addr)
     end
 
     function aircondition:SETEMP(value)
-        C4:SetVariable("CURRENT_TEMPRETURE", value)
 	   return self:createCMD(AIR["SETEMP"],string.format("%2X",value))
     end
 
     function aircondition:HEAT()
-        C4:SetVariable("CURRENT_MODE", 1)
 	    return self:createCMD(AIR["HEAT"])
     end
 
     function aircondition:COOL()
-        C4:SetVariable("CURRENT_MODE", 0)
 	   return self:createCMD(AIR["COOL"])
     end
 
     function aircondition:DRY()
-        C4:SetVariable("CURRENT_MODE", 3)
 	   return self:createCMD(AIR["DRY"])
     end
 
     function aircondition:FAN()
-        C4:SetVariable("CURRENT_MODE", 2)
 	   return self:createCMD(AIR["FAN"])
     end
 
     function aircondition:HIGH()
-        C4:SetVariable("CURRENT_SPEED", 2)
 	   return self:createCMD(AIR["HIGH"])
     end
 
     function aircondition:MIDDLE()
-        C4:SetVariable("CURRENT_SPEED", 1)
 	   return self:createCMD(AIR["MIDDLE"])
     end
 
     function aircondition:LOW()
-        C4:SetVariable("CURRENT_SPEED", 0)
 	   return self:createCMD(AIR["LOW"])
     end
 
@@ -87,12 +79,10 @@ function Aircondition:create(addr)
     end
 
     function aircondition:ON()
-	   C4:SetVariable("IS_ON", "1", "BOOL")
 	   return self:createCMD(AIR["ON"])
     end
 
     function aircondition:OFF()
-	   C4:SetVariable("IS_ON", "0", "BOOL")
 	   return self:createCMD(AIR["OFF"])
     end
     
