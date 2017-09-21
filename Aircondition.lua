@@ -33,7 +33,6 @@ function Aircondition:create(addr)
 	   else
 		  ret = ret .. " " .. cmd .. " " .. value
 	   end
-
 	   ret = ret .. " 01 " .. self.addr
         local pack = Pack:create()
 	   local sum = pack.checksum(tohex(ret))
