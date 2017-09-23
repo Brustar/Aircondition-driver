@@ -43,7 +43,7 @@ function Aircondition:create(addr)
     end
 
     function aircondition:SETEMP(value)
-	   C4:SetVariable("SETTING_TEMPRETURE", value)
+	   C4:SetVariable("SETTING_TEMPRETURE",tostring(value))
 	   return self:createCMD(AIR["SETEMP"],string.format("%2X",value))
     end
 

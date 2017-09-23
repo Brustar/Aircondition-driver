@@ -123,7 +123,7 @@ local server = {
 										  if pack.head(strData) == VI_HEAD then
 											 if pack.cmd(strData) == 0x20 then
 												local v = pack.decode(strData)
-												vi:lightContol(v.deviceID,v.state)
+												vi:lightContol(v.deviceID+390,v.state)
 											 elseif pack.cmd(strData) == 0x24 then -- fresh air from vi
 												local v = pack.decodeFresh(strData)
 												vi:freshControl()
@@ -132,7 +132,7 @@ local server = {
 												vi:curtainContol(v.deviceID,v.state)
 											 elseif pack.cmd(strData) == 0x22 then
 												local air = pack.decodeAir(strData)
-												vi:airControl(air.deviceID,air.state,air.mode,air.temp,air.speed)
+												vi:airControl(air.deviceID+679,air.state,air.mode,air.temp,air.speed)
 											 elseif pack.cmd(strData) == 0x23 then
 												local sceneID = pack.sceneID(strData)
 												vi:sceneContol(sceneID)
