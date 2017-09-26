@@ -267,29 +267,17 @@
   </config>
   <capabilities />
   <search_types />
-  <connections>
-    <connection>
-      <id>1</id>
-      <type>1</type>
-      <connectionname>Serial RS-232</connectionname>
-      <consumer>True</consumer>
-      <linelevel>True</linelevel>
-      <classes>
-        <class>
-          <classname>RS_232</classname>
-        </class>
-      </classes>
-    </connection>
-  </connections>
+  <connections />
   <events>
     <event>
       <id>1</id>
       <name>key event</name>
+      <description></description>
     </event>
     <event>
       <id>2</id>
       <name>scene event</name>
-      <description>New Event Description</description>
+      <description></description>
     </event>
   </events>
 </devicedata>
