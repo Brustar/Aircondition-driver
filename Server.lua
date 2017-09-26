@@ -117,13 +117,18 @@ local server = {
                                  local info = {}
                                  client:OnRead(
                                               function(cli, strData)
-										  hexdump(strData, function(s) print("server:<------ " .. s) end)
+										  --hexdump(strData, function(s) print("server:<------ " .. s) end)
 										  local pack = Pack:create()
 										  local vi = Visualintercom:create()
 										  if pack.head(strData) == VI_HEAD then
+											 if pack.cmd(strData) ~= 0x10 then
+												hexdump(strData, function(s) print("server:<------ " .. s) end)
+											 end
+											 
 											 if pack.cmd(strData) == 0x20 then
 												local v = pack.decode(strData)
-												vi:lightContol(v.deviceID+390,v.state)
+												vi:lightContol(v.deviceID + 256,v.state)
+												vi:lightContol(v.deviceID + 512,v.state)
 											 elseif pack.cmd(strData) == 0x24 then -- fresh air from vi
 												local v = pack.decodeFresh(strData)
 												vi:freshControl()
@@ -132,11 +137,11 @@ local server = {
 												vi:curtainContol(v.deviceID,v.state)
 											 elseif pack.cmd(strData) == 0x22 then
 												local air = pack.decodeAir(strData)
-												vi:airControl(air.deviceID+679,air.state,air.mode,air.temp,air.speed)
+												vi:airControl(air.deviceID + 256,air.state,air.mode,air.temp,air.speed)
+												vi:airControl(air.deviceID + 512,air.state,air.mode,air.temp,air.speed)
 											 elseif pack.cmd(strData) == 0x23 then
 												local sceneID = pack.sceneID(strData)
-												vi:sceneContol(sceneID)
-											 
+												vi:sceneControl(sceneID)
 											 elseif pack.cmd(strData) == 0x12 then
 												cli:Write(vi:updateState())
 											 

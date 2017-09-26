@@ -284,7 +284,12 @@
   <events>
     <event>
       <id>1</id>
-      <name>Key Event</name>
+      <name>key event</name>
+    </event>
+    <event>
+      <id>2</id>
+      <name>scene event</name>
+      <description>New Event Description</description>
     </event>
   </events>
 </devicedata>
