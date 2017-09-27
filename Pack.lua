@@ -25,10 +25,11 @@ function Pack:create()
     end
  
     function pack.decode(data)
-        local _,_,_,_,deviceid,state = string.unpack(data,PATTERN)
+        local _,_,_,extaddr,addr,state = string.unpack(data,PATTERN)
 
 	   local device = {}
-	   device.deviceID = deviceid
+	   device.extaddr = extaddr
+	   device.addr = addr
 	   device.state = state
 	   return device
 
@@ -61,9 +62,33 @@ function Pack:create()
     end
     
     function pack.decodeFresh(data)
-	   local pattern = "bbbbbbbbbbbbbbbbbbb"
-	   local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,power= string.unpack(data,pattern)
-	   print("var",power)
+    	local fresh = {}
+	   local pattern = "bbb"
+	   local _,_,_,length= string.unpack(data,pattern)
+	   print("len:",length)
+	   if length == 5 then
+	   		pattern = "bbbbbbbbb"
+	   		local _,_,_,_,addr,extaddr,action,_,value= string.unpack(data,pattern)
+	   		fresh.length = length
+	   		fresh.extaddr = extaddr
+	   		fresh.addr = addr
+	   		fresh.action = action
+	   		fresh.value = value
+	   		return fresh
+	   end
+
+	   if length == 4 then
+	   		pattern = "bbbbbbbb"
+	   		local _,_,_,_,addr,extaddr,action,value= string.unpack(data,pattern)
+	   		fresh.length = length
+	   		fresh.extaddr = extaddr
+	   		fresh.addr = addr
+	   		fresh.action = action
+	   		fresh.value = value
+	   		return fresh
+	   end
+
+	   return nil
     end
     
     function pack.decodeFreshFB(data)
@@ -88,14 +113,35 @@ function Pack:create()
 
     function pack.decodeAir(data)
     	local pattern = "bbbbbbbbbb"
-    	local _,_,_,_,addr,_,state,mode,temp,speed= string.unpack(data,pattern)
+    	local _,_,_,extaddr,addr,_,state,mode,temp,speed= string.unpack(data,pattern)
 	local air = {}
-	air.deviceID = addr
+	air.extaddr = extaddr
+	air.addr = addr
 	air.state = state
 	air.mode = mode
 	air.temp = temp
 	air.speed = speed
 	return air
+    end
+
+    --feedback
+    function pack.handleAddr(deviceid)
+    	addr = deviceid % 256
+    	extaddr = deviceid / 256
+    	if addr>0xaf then
+    		addr = addr % 0xaf
+    		extaddr = extaddr + 0x10
+    	end
+    	return extaddr,addr
+    end
+
+    --control
+    function pack.calcAddr( extaddr,addr )
+    	if extaddr > 0x10 then
+    		addr = addr + 0xaf
+    		extaddr = extaddr - 0x10
+    	end
+    	return extaddr*256+addr
     end
 
     function pack.checksum(strPkt)

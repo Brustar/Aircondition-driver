@@ -1,3 +1,4 @@
+
 Visualintercom = {}
 
 VI_HEAD = 0XAA
@@ -24,7 +25,9 @@ function Visualintercom:create()
         return tohex(CMD_UPLOAD_STATE)
     end
 
-    function visualintercom:lightContol(deviceID,state)
+    function visualintercom:lightContol(extrAddr,addr,state)
+        local pack = Pack:create()
+        local deviceID = pack.calcAddr(extrAddr,addr)
         if state == 0 then 
             C4:SendToDevice(deviceID,"ON",{})
         elseif state == 1 then
@@ -38,7 +41,9 @@ function Visualintercom:create()
 
     end
 
-    function visualintercom:curtainContol(deviceID,state)
+    function visualintercom:curtainContol(extrAddr,addr,state)
+        local pack = Pack:create()
+        local deviceID = pack.calcAddr(extrAddr,addr)
         local control = ""
         if state == 0 then 
             control = "UP"
@@ -53,7 +58,9 @@ function Visualintercom:create()
     function visualintercom:curtainFB(deviceID)
     end
 
-    function visualintercom:airControl(deviceID,power,mode,tempture,speed)
+    function visualintercom:airControl(extrAddr,addr,power,mode,tempture,speed)
+        local pack = Pack:create()
+        local deviceID = pack.calcAddr(extrAddr,addr)
 	   print(deviceID,power,mode,tempture,speed)
         if power==0 then
             C4:SendToDevice(deviceID,"OFF",{})
@@ -100,12 +107,36 @@ function Visualintercom:create()
     function visualintercom:airFB(deviceID)
     end
     
-    function visualintercom:freshControl()
-	   
+    function visualintercom:freshControl(extrAddr,addr,action,value)
+        local pack = Pack:create()
+	   local deviceID = pack.calcAddr(extrAddr,addr)
+       if action == 0x00 then
+        if value == 0x00 then
+            C4:SendToDevice(deviceID,"FRESH_ON",{})
+        end
+        if value == 0x01 then
+            C4:SendToDevice(deviceID,"FRESH_OFF",{})
+        end
+       end
+
+       if action == 0x06 then
+        if value == 0x01 then
+            C4:SendToDevice(deviceID,"FRESH_LOW",{})
+        end
+        if value == 0x02 then
+            C4:SendToDevice(deviceID,"FRESH_MIDDLE",{})
+        end
+        if value == 0x03 then
+            C4:SendToDevice(deviceID,"FRESH_HIGH",{})
+        end
+       end
+
+
     end
 
     function visualintercom:sceneControl(sceneID)
-        C4:SetVariable("SCENE_ID", tostring(pack.deviceID))
+	   print("scene:",sceneID)
+        C4:SetVariable("SCENE_ID", tostring(sceneID))
         C4:FireEvent("scene event")
     end
     

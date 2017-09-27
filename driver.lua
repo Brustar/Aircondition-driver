@@ -251,3 +251,4 @@ C4:AddVariable("KEY_ID", "0", "NUMBER")
 
 C4:AddVariable("FRESH_POWER", "0", "BOOL")
 C4:AddVariable("SETTING_TEMPRETURE", "0", "NUMBER")
+C4:AddVariable("SCENE_ID", "0", "NUMBER")
