@@ -142,25 +142,25 @@ function EX_CMD.LUA_ACTION(tParams)
     local pack = Pack:create()
     if action == "K1" then
 	   cmd = pack.lightonHex(1)
-	   C4:SetVariable("Key_ID", 1)
+	   C4:SetVariable("KEY_ID", 1)
 	   C4:FireEvent("key event")
     end
     
     if action == "K2" then
 	   cmd = pack.lightonHex(2)
-	   C4:SetVariable("Key_ID", 2)
+	   C4:SetVariable("KEY_ID", 2)
 	   C4:FireEvent("key event")
     end
     
     if action == "K3" then
 	   cmd = pack.lightonHex(3)
-	   C4:SetVariable("Key_ID", 3)
+	   C4:SetVariable("KEY_ID", 3)
 	   C4:FireEvent("key event")
     end
     
     if action == "K4" then
 	   cmd = pack.lightonHex(4)
-	   C4:SetVariable("Key_ID", 4)
+	   C4:SetVariable("KEY_ID", 4)
 	   C4:FireEvent("key event")
     end
     

@@ -28,6 +28,7 @@ function Visualintercom:create()
     function visualintercom:lightContol(extrAddr,addr,state)
         local pack = Pack:create()
         local deviceID = pack.calcAddr(extrAddr,addr)
+        print("light deviceID:",string.format("%04X",deviceID))
         if state == 0 then 
             C4:SendToDevice(deviceID,"ON",{})
         elseif state == 1 then
@@ -44,6 +45,7 @@ function Visualintercom:create()
     function visualintercom:curtainContol(extrAddr,addr,state)
         local pack = Pack:create()
         local deviceID = pack.calcAddr(extrAddr,addr)
+        print("blind deviceID:",string.format("%04X",deviceID))
         local control = ""
         if state == 0 then 
             control = "UP"
@@ -60,46 +62,46 @@ function Visualintercom:create()
 
     function visualintercom:airControl(extrAddr,addr,power,mode,tempture,speed)
         local pack = Pack:create()
-        local deviceID = pack.calcAddr(extrAddr,addr)
-	   print(deviceID,power,mode,tempture,speed)
+        local deviceID = 0x02A8--pack.calcAddr(extrAddr,addr)
+	   print("air deviceID:",string.format("%04X",deviceID))
         if power==0 then
-            C4:SendToDevice(deviceID,"OFF",{})
+            C4:SendToDevice(deviceID,"OFF",{addr = addr})
         end
 
         if power==1 then
-            C4:SendToDevice(deviceID,"ON",{})
+            C4:SendToDevice(deviceID,"ON",{addr = addr})
         end
 
         if mode==0 then
-            C4:SendToDevice(deviceID,"COOL",{})
+            C4:SendToDevice(deviceID,"COOL",{addr = addr})
         end
 
         if mode==1 then
-            C4:SendToDevice(deviceID,"HEAT",{})
+            C4:SendToDevice(deviceID,"HEAT",{addr = addr})
         end
 
         if mode==2 then
-            C4:SendToDevice(deviceID,"FAN",{})
+            C4:SendToDevice(deviceID,"FAN",{addr = addr})
         end
 
         if mode==3 then
-            C4:SendToDevice(deviceID,"DRY",{})
+            C4:SendToDevice(deviceID,"DRY",{addr = addr})
         end
 
         if tempture>=20 and tempture<=60 then
-            C4:SendToDevice(deviceID,"SETEMP",{degree = math.floor(tempture/2)})
+            C4:SendToDevice(deviceID,"SETEMP",{addr = addr,degree = math.floor(tempture/2)})
         end
 
         if speed==0 then
-            C4:SendToDevice(deviceID,"LOW",{})
+            C4:SendToDevice(deviceID,"LOW",{addr = addr})
         end
 
         if speed==1 then
-            C4:SendToDevice(deviceID,"MIDDLE",{})
+            C4:SendToDevice(deviceID,"MIDDLE",{addr = addr})
         end
 
         if speed==2 then
-            C4:SendToDevice(deviceID,"HIGH",{})
+            C4:SendToDevice(deviceID,"HIGH",{addr = addr})
         end
 
     end
@@ -108,8 +110,9 @@ function Visualintercom:create()
     end
     
     function visualintercom:freshControl(extrAddr,addr,action,value)
-        local pack = Pack:create()
-	   local deviceID = pack.calcAddr(extrAddr,addr)
+        --local pack = Pack:create()
+	   local deviceID = 0x02A8--pack.calcAddr(extrAddr,addr)
+       print("fresh deviceID:",string.format("%04X",deviceID))
        if action == 0x00 then
         if value == 0x00 then
             C4:SendToDevice(deviceID,"FRESH_ON",{})

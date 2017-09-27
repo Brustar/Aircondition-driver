@@ -1,6 +1,7 @@
 Pack = {}
 
-KEYBOARD_PRESS = {"02 20 10 11 00 01 00 80 4E E3","02 20 10 12 00 01 00 80 0A E3","02 20 10 13 00 01 00 80 73 32","02 20 10 14 00 01 00 80 82 E3"}
+KEYBOARD_PRESS_WHEN_LIGHT = {"02 20 10 11 00 01 00 80 4E E3","02 20 10 12 00 01 00 80 0A E3","02 20 10 13 00 01 00 80 37 23","02 20 10 14 00 01 00 80 82 E3"}
+KEYBOARD_PRESS = {"02 20 10 11 00 01 00 00 4f 43","02 20 10 12 00 01 00 00 0b 43","02 20 10 13 00 01 00 00 36 83","02 20 10 14 00 01 00 00 83 43"}
 KEY_LIGHT_ON = {"02 06 10 21 00 01 1C F3","02 06 10 22 00 01 EC F3","02 06 10 23 00 01 BD 33","02 06 10 24 00 01 0C F2"}
 KEY_LIGHT_OFF = {"02 06 10 21 00 00 DD 33","02 06 10 22 00 00 2D 33","02 06 10 23 00 00 7C F3","02 06 10 24 00 00 CD 32"}
 
@@ -25,7 +26,8 @@ function Pack:create()
     end
  
     function pack.decode(data)
-        local _,_,_,extaddr,addr,state = string.unpack(data,PATTERN)
+    	local pattern = "bbbbbbb"
+        local _,_,_,_,extaddr,addr,state = string.unpack(data,pattern)
 
 	   local device = {}
 	   device.extaddr = extaddr
@@ -37,6 +39,10 @@ function Pack:create()
 
     function pack.keyHex(num)
 	   return tohex(KEYBOARD_PRESS[num])
+    end
+
+    function pack.keyHexLight(num)
+	   return tohex(KEYBOARD_PRESS_WHEN_LIGHT[num])
     end
     
     function pack.lightonHex(num)
@@ -127,19 +133,19 @@ function Pack:create()
     --feedback
     function pack.handleAddr(deviceid)
     	addr = deviceid % 256
-    	extaddr = deviceid / 256
+    	extaddr = math.floor(deviceid / 256)
     	if addr>0xaf then
     		addr = addr % 0xaf
-    		extaddr = extaddr + 0x10
+    		extaddr = extaddr + 10
     	end
     	return extaddr,addr
     end
 
     --control
     function pack.calcAddr( extaddr,addr )
-    	if extaddr > 0x10 then
+    	if extaddr > 10 then
     		addr = addr + 0xaf
-    		extaddr = extaddr - 0x10
+    		extaddr = extaddr - 10
     	end
     	return extaddr*256+addr
     end

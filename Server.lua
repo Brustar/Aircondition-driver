@@ -117,7 +117,7 @@ local server = {
                                  local info = {}
                                  client:OnRead(
                                               function(cli, strData)
-										  --hexdump(strData, function(s) print("server:<------ " .. s) end)
+										  --hexdump(strData, function(s) print("server recieve:<------ " .. s) end)
 										  local pack = Pack:create()
 										  local vi = Visualintercom:create()
 										  if pack.head(strData) == VI_HEAD then
@@ -158,29 +158,28 @@ local server = {
 											 end
 										  else
 											 function handle(key)
-												C4:SetVariable("Key_ID", tostring(key))
+												C4:SetVariable("KEY_ID", tostring(key))
 												C4:FireEvent("key event")
 												local data =nil
 												for i =1 , 4 do
 												    C4:SetTimer(i*500, function()
 													   if i==key then
-														  data = pack.lightonHex(i)
+														    data = pack.lightonHex(i)
 													   else
 														  data = pack.lightoffHex(i) 
 													   end
-												    
-													   cli:Write(toHex(data))
+													   cli:Write(tohex(data))
 												    end)
 												end
 											 end
 											 
-											 if strData == pack.keyHex(1) then
+											 if strData == pack.keyHex(1) or strData == pack.keyHexLight(1) then
 												handle(1)
-											 elseif strData == pack.keyHex(2) then
+											 elseif strData == pack.keyHex(2) or strData == pack.keyHexLight(2) then
 												handle(2)
-											 elseif strData == pack.keyHex(3) then
+											 elseif strData == pack.keyHex(3) or strData == pack.keyHexLight(3) then
 												handle(3)
-											 elseif strData == pack.keyHex(4) then
+											 elseif strData == pack.keyHex(4) or strData == pack.keyHexLight(4) then
 												handle(4)
 											 end
 										  end
