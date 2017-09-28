@@ -125,7 +125,7 @@ function Pack:create()
 	air.addr = addr
 	air.state = state
 	air.mode = mode
-	air.temp = temp
+	air.temp = math.floor(temp/2)
 	air.speed = speed
 	return air
     end

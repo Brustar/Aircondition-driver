@@ -130,7 +130,6 @@ local server = {
 												vi:lightContol(v.extaddr,v.addr,v.state)
 											 elseif pack.cmd(strData) == 0x24 then -- fresh air from vi
 												local v = pack.decodeFresh(strData)
-                        print(v.extaddr,v.addr,v.action,v.value)
 												vi:freshControl(v.extaddr,v.addr,v.action,v.value)
 											 elseif pack.cmd(strData) == 0x21 then
 												local v = pack.decode(strData)

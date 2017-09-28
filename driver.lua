@@ -23,7 +23,6 @@ function dbgStatus(strStatus)
 end
 
 function airControl(cmd)
-    print("cmd:",cmd)
     if cmd == nil then return end
     local pkt = tohex(cmd)
     SendToAir(pkt)
@@ -116,7 +115,15 @@ function QueueCommand(strCommand,tParams)
     end
     local cmd = nil
     if air[strCommand] and type(air[strCommand]) == "function" then
+	   local degree = 0
+     if tParams then
+        degree=tParams["degree"] or 0
+      end
+	   if degree == 0 then
        cmd = air[strCommand](air)
+	   else
+	     cmd = air[strCommand](air,degree)
+	   end
     end
     
     airControl(cmd)
